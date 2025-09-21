@@ -1,0 +1,71 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 40% 98%;
+    --foreground: 222 25% 12%;
+    --card: 220 40% 99%;
+    --card-foreground: 222 25% 12%;
+    --popover: 220 40% 99%;
+    --popover-foreground: 222 25% 12%;
+    --primary: 222 85% 56%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 196 100% 95%;
+    --secondary-foreground: 222 45% 18%;
+    --muted: 220 15% 94%;
+    --muted-foreground: 220 12% 40%;
+    --accent: 199 95% 48%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 58%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 15% 88%;
+    --input: 220 15% 88%;
+    --ring: 222 85% 56%;
+    --radius: 0.75rem;
+  }
+  .dark {
+    --background: 222 51% 6%;
+    --foreground: 210 40% 96%;
+    --card: 222 51% 8%;
+    --card-foreground: 210 40% 96%;
+    --popover: 222 51% 8%;
+    --popover-foreground: 210 40% 96%;
+    --primary: 199 100% 64%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 210 24% 16%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 220 18% 16%;
+    --muted-foreground: 215 16% 72%;
+    --accent: 199 95% 48%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 74% 40%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 220 18% 18%;
+    --input: 220 18% 18%;
+    --ring: 199 89% 48%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  html, body { height: 100%; }
+  body { @apply bg-background text-foreground antialiased; font-family: Inter, ui-sans-serif, system-ui; }
+}
+
+.text-type {
+  display: inline-block;
+  white-space: pre-wrap;
+}
+
+.text-type__cursor {
+  margin-left: 0.25rem;
+  display: inline-block;
+  opacity: 1;
+}
+
+.text-type__cursor--hidden {
+  display: none;
+}
