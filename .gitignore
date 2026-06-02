@@ -1,1 +1,10 @@
 /node_modules
+
+# Next.js build output
+/.next
+/out
+
+# Logs & scratch
+*.log
+.playwright-mcp/
+before-home.png
