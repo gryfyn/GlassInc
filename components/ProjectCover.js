@@ -71,7 +71,84 @@ function OpenMotif() {
   );
 }
 
-const MOTIFS = { software: SoftwareMotif, operations: OperationsMotif, open: OpenMotif };
+function AnalyticsMotif() {
+  return (
+    <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="80" y1="184" x2="320" y2="184" stroke={LINE} strokeWidth="1.5" />
+      <line x1="80" y1="56" x2="80" y2="184" stroke={LINE} strokeWidth="1.5" />
+      <polyline points="92,150 132,118 172,134 212,86 252,104 292,58 314,78" stroke={ACCENT} strokeWidth="2" />
+      <polyline points="92,168 132,156 172,162 212,134 252,146 292,120 314,132" stroke={LINE} strokeWidth="1.5" />
+      {[[132,118],[212,86],[292,58]].map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r="2.6" fill={ACCENT2} stroke="none" />
+      ))}
+    </g>
+  );
+}
+
+function WebMotif() {
+  return (
+    <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="96" y="56" width="208" height="128" rx="4" stroke={LINE} strokeWidth="1.5" />
+      <line x1="96" y1="80" x2="304" y2="80" stroke={LINE} strokeWidth="1.5" />
+      <circle cx="108" cy="68" r="2.4" fill={ACCENT2} stroke="none" />
+      <circle cx="118" cy="68" r="2.4" fill={LINE} stroke="none" />
+      <circle cx="128" cy="68" r="2.4" fill={LINE} stroke="none" />
+      <rect x="150" y="63" width="142" height="10" rx="2" fill={LINE} stroke="none" />
+      <rect x="112" y="96" width="84" height="44" rx="2" fill={ACCENT} opacity="0.85" stroke="none" />
+      <rect x="208" y="96" width="84" height="8" rx="2" fill={LINE} stroke="none" />
+      <rect x="208" y="112" width="64" height="8" rx="2" fill={LINE} stroke="none" />
+      <rect x="208" y="128" width="74" height="8" rx="2" fill={LINE} stroke="none" />
+      <rect x="112" y="152" width="180" height="6" rx="2" fill={LINE} stroke="none" />
+      <rect x="112" y="166" width="120" height="6" rx="2" fill={LINE} stroke="none" />
+    </g>
+  );
+}
+
+function GalleryMotif() {
+  const tiles = [[110, 64], [180, 64], [250, 64], [110, 126], [180, 126], [250, 126]];
+  return (
+    <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+      {tiles.map(([x, y], i) => (
+        <rect key={i} x={x} y={y} width="58" height="50" rx="3"
+          stroke={LINE} strokeWidth="1.5" fill={i === 3 ? ACCENT : "none"} fillOpacity={i === 3 ? 0.85 : 0} />
+      ))}
+      <circle cx="139" cy="83" r="5" stroke={ACCENT2} strokeWidth="1.4" />
+      <path d="M120 108 L134 94 L150 108" stroke={ACCENT2} strokeWidth="1.4" />
+    </g>
+  );
+}
+
+function AiMotif() {
+  return (
+    <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="112" y="56" width="96" height="128" rx="4" stroke={LINE} strokeWidth="1.5" />
+      <rect x="126" y="74" width="64" height="8" rx="2" fill={LINE} stroke="none" />
+      <rect x="126" y="92" width="48" height="6" rx="2" fill={ACCENT} opacity="0.85" stroke="none" />
+      <rect x="126" y="106" width="68" height="6" rx="2" fill={LINE} stroke="none" />
+      <rect x="126" y="120" width="56" height="6" rx="2" fill={LINE} stroke="none" />
+      <g>
+        <line x1="244" y1="96" x2="282" y2="78" stroke={LINE} strokeWidth="1.4" />
+        <line x1="244" y1="96" x2="282" y2="120" stroke={LINE} strokeWidth="1.4" />
+        <line x1="282" y1="78" x2="296" y2="150" stroke={LINE} strokeWidth="1.4" />
+        <line x1="282" y1="120" x2="296" y2="150" stroke={LINE} strokeWidth="1.4" />
+        <circle cx="244" cy="96" r="5" fill={ACCENT} stroke="none" />
+        <circle cx="282" cy="78" r="4" fill={ACCENT2} stroke="none" />
+        <circle cx="282" cy="120" r="4" fill={ACCENT2} stroke="none" />
+        <circle cx="296" cy="150" r="4" fill={ACCENT2} stroke="none" />
+      </g>
+    </g>
+  );
+}
+
+const MOTIFS = {
+  software: SoftwareMotif,
+  operations: OperationsMotif,
+  open: OpenMotif,
+  analytics: AnalyticsMotif,
+  web: WebMotif,
+  gallery: GalleryMotif,
+  ai: AiMotif,
+};
 
 export default function ProjectCover({ variant = "software", className = "" }) {
   const Motif = MOTIFS[variant] || SoftwareMotif;

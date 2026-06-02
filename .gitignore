@@ -8,3 +8,4 @@
 *.log
 .playwright-mcp/
 before-home.png
+heroflim-*.png

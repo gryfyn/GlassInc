@@ -10,7 +10,8 @@ import {
 import Header from "./Header";
 import Footer from "./Footer";
 import ProductFrame from "./ProductFrame";
-import DashboardMock from "./DashboardMock";
+import ProjectCover from "./ProjectCover";
+import HeroFilm from "./HeroFilm";
 import GrainOverlay from "./GrainOverlay";
 import useScrollReveal from "./useScrollReveal";
 import useMagnetic from "./useMagnetic";
@@ -31,25 +32,52 @@ const services = [
 
 const projects = [
   {
-    variant: "software",
-    tag: "Healthcare · 2024–2025",
+    img: "/assets/project-healthcare.jpg",
+    tag: "Healthcare · Management system",
     title: "Resident Treatment Facility Management System",
-    desc: "A complete management platform for a treatment & rehabilitation facility — intake, scheduling, staff, and reporting in one place.",
-    outcome: "Replaced manual spreadsheet tracking for an entire facility. Staff onboarded within a week.",
+    desc: "Intake, scheduling, staff, and reporting for a care facility — one platform replacing spreadsheets.",
   },
   {
-    variant: "operations",
-    tag: "SME · 2024",
+    img: "/assets/project-operations.jpg",
+    tag: "SME · Operations platform",
     title: "Business Operations Management System",
-    desc: "A bespoke operations platform matched to an SME's exact workflows, data tracking, and staff records.",
-    outcome: "Eliminated manual tracking across three departments. Live visibility into daily operations.",
+    desc: "Workflows, data tracking, and staff records matched to an SME's exact operations.",
   },
   {
-    variant: "open",
-    tag: "Open",
-    title: "Your project here",
-    desc: "This space is reserved for the next build. Tell us what you want to make.",
-    outcome: null,
+    variant: "web",
+    tag: "Home care · Web platform",
+    title: "Highrise Home Care",
+    desc: "A multi-page platform for a home-care agency — services, facilities, admissions, and enquiries.",
+  },
+  {
+    variant: "software",
+    tag: "Homes · Web platform",
+    title: "Westford Homes",
+    desc: "Services, admissions, and an email-backed enquiry flow, with SEO built in.",
+  },
+  {
+    variant: "web",
+    tag: "IT services · Company site",
+    title: "Cloud Computing Consultancy",
+    desc: "A full company site spanning a dozen service lines — cloud, networking, security, and smart solutions.",
+  },
+  {
+    variant: "gallery",
+    tag: "Creative · Portfolio",
+    title: "Art By Remmy",
+    desc: "An artist portfolio with a dynamic image gallery and direct email contact.",
+  },
+  {
+    variant: "analytics",
+    tag: "Data & ML · Python",
+    title: "Predictive Analytics & ML Models",
+    desc: "Machine-learning models for price prediction, medical diagnosis, and forecasting.",
+  },
+  {
+    variant: "ai",
+    tag: "AI tool · Next.js",
+    title: "PDF-to-Quiz Generator",
+    desc: "An AI tool that turns uploaded PDFs into interactive quizzes.",
   },
 ];
 
@@ -59,35 +87,34 @@ const steps = [
   { Icon: PackageCheck, name: "Deliver", desc: "Software your team actually uses — proper handover, built for adoption, not just shipped." },
 ];
 
-const PROJECT_VISUAL = {
-  software: { img: "/assets/project-healthcare.jpg", label: "healthcare" },
-  operations: { img: "/assets/project-operations.jpg", label: "operations" },
-  open: { img: "/assets/project-placeholder.jpg", label: "in progress" },
-};
-
-function ProjectVisual({ variant }) {
-  const { img, label } = PROJECT_VISUAL[variant] || PROJECT_VISUAL.software;
-  const isOpen = variant === "open";
+function ProjectCard({ p }) {
   return (
-    <ProductFrame tone="dark" glow={!isOpen} label={label}>
-      <div className="relative aspect-[16/10] overflow-hidden bg-glass-ink">
-        <img src={img} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover photo-duotone" />
-        {/* accent duotone wash — keeps stock imagery on-brand (single accent) */}
-        <span
-          aria-hidden
-          className="absolute inset-0"
-          style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.50), rgba(10,10,11,0.30))", mixBlendMode: "color" }}
-        />
-        {isOpen && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-glass-ink/55">
-            <div className="relative w-40 h-1.5 overflow-hidden" style={{ background: "#1E1E22" }}>
-              <span className="accent-shimmer absolute inset-y-0 left-0 w-1/3" style={{ background: "#2563EB" }} />
-            </div>
-            <p className="text-[13px] uppercase tracking-[0.12em] text-glass-text-dark">Next build · reserved</p>
-          </div>
+    <Link href="/contact" className="card-light overflow-hidden flex flex-col group">
+      <div className="relative h-48 w-full bg-glass-ink overflow-hidden">
+        {p.img ? (
+          <>
+            <img src={p.img} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover photo-duotone" />
+            {/* accent duotone wash — keeps stock imagery on-brand (single accent) */}
+            <span
+              aria-hidden
+              className="absolute inset-0"
+              style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.50), rgba(10,10,11,0.30))", mixBlendMode: "color" }}
+            />
+          </>
+        ) : (
+          <ProjectCover variant={p.variant} className="h-full" />
         )}
       </div>
-    </ProductFrame>
+      <div className="p-6 flex flex-col flex-1">
+        <span className="t-eyebrow text-glass-text-3">{p.tag}</span>
+        <h3 className="mt-3 text-[18px] font-bold tracking-[-0.015em] text-glass-text-1 leading-snug group-hover:text-glass-accent transition-colors">{p.title}</h3>
+        <p className="mt-2 text-[14px] leading-relaxed text-glass-text-2 flex-1">{p.desc}</p>
+        <span className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-medium text-glass-accent">
+          Discuss a build like this
+          <ArrowUpRight strokeWidth={1.75} className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+        </span>
+      </div>
+    </Link>
   );
 }
 
@@ -153,8 +180,8 @@ export default function HomeClient() {
               {/* Right: product frame */}
               <div className="lg:col-span-6">
                 <div ref={heroVisual} className="relative lg:pl-6">
-                  <ProductFrame tone="dark" glow label="operations">
-                    <DashboardMock variant="operations" />
+                  <ProductFrame tone="dark" glow label="showreel">
+                    <HeroFilm />
                   </ProductFrame>
                 </div>
               </div>
@@ -215,40 +242,15 @@ export default function HomeClient() {
               <span className="t-eyebrow text-glass-accent">03 — Selected work</span>
               <h2 className="t-h2 mt-4 text-glass-text-1">What we've built</h2>
               <p className="mt-5 text-[18px] leading-relaxed text-glass-text-2 max-w-2xl">
-                We show the work, not vanity numbers. Every project here was built, delivered, and is
-                live with a real client.
+                A mix of management systems, web platforms, data tools, and creative work — each one
+                designed, built, and shipped.
               </p>
             </div>
 
-            <div className="space-y-16 md:space-y-24">
-              {projects.map((p, i) => {
-                const flip = i % 2 === 1;
-                return (
-                  <div key={p.title} className="reveal grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
-                    {/* Visual */}
-                    <div className={flip ? "lg:order-2" : ""}>
-                      <ProjectVisual variant={p.variant} />
-                    </div>
-                    {/* Copy */}
-                    <div className={flip ? "lg:order-1" : ""}>
-                      <span className="t-eyebrow text-glass-text-3">{p.tag}</span>
-                      <h3 className="mt-3 t-h3 text-glass-text-1 leading-snug">{p.title}</h3>
-                      <p className="mt-4 text-[16px] leading-relaxed text-glass-text-2 max-w-xl">{p.desc}</p>
-                      {p.outcome ? (
-                        <div className="mt-6 pt-5 border-t border-glass-canvas-border flex items-start gap-2.5 max-w-xl">
-                          <Check strokeWidth={1.75} className="w-4 h-4 mt-0.5 text-glass-accent shrink-0" />
-                          <span className="text-[14px] leading-relaxed text-glass-text-2">{p.outcome}</span>
-                        </div>
-                      ) : (
-                        <Link href="/contact" className="mt-6 inline-flex items-center gap-1.5 text-[15px] font-medium text-glass-accent group">
-                          Start a conversation
-                          <ArrowUpRight strokeWidth={1.75} className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+            <div data-stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {projects.map((p) => (
+                <ProjectCard key={p.title} p={p} />
+              ))}
             </div>
           </div>
         </section>
