@@ -1,367 +1,385 @@
-'use client'
-import Head from 'next/head'
-import Header from '../../../components/Header';
-import Footer from '../../../components/Footer';
-import Link from 'next/link'
-import { useState, useEffect } from 'react'
+"use client";
+import { useRef, useState } from "react";
+import Link from "next/link";
+import {
+  ArrowRight,
+  Mail,
+  MessageCircle,
+  Globe,
+  Code2,
+  MonitorSmartphone,
+  Bot,
+  BarChart3,
+  PenTool,
+  Megaphone,
+  MailCheck,
+  ArrowLeft,
+} from "lucide-react";
+import Header from "../../../components/Header";
+import Footer from "../../../components/Footer";
+import useScrollReveal from "../../../components/useScrollReveal";
 
-const contactInfo = [
-  {
-    name: 'Email',
-    value: 'info@glassinc.com',
-    icon: '📧',
-    link: 'mailto:info@glassinc.com',
-    gradient: 'from-blue-500 to-cyan-500',
-    description: 'Drop us a line anytime',
-    response: 'We respond within 2 hours'
-  },
-  {
-    name: 'Phone',
-    value: '+1 (555) 123-4567',
-    icon: '📞',
-    link: 'tel:+15551234567',
-    gradient: 'from-green-500 to-emerald-500',
-    description: 'Call us during business hours',
-    response: 'Mon-Fri, 9AM-6PM PST'
-  },
-  {
-    name: 'Address',
-    value: '123 Innovation Drive, Tech City, CA 94043, USA',
-    icon: '📍',
-    link: 'https://maps.google.com/?q=123+Innovation+Drive,+Tech+City,+CA+94043',
-    gradient: 'from-purple-500 to-pink-500',
-    description: 'Visit our headquarters',
-    response: 'Schedule a meeting'
-  },
-]
+const EMAIL = "glassinctechnologies@gmail.com";
 
 const projectTypes = [
-  { name: 'Web Development', icon: '🌐', popular: true },
-  { name: 'Mobile Apps', icon: '📱', popular: true },
-  { name: 'AI Automation', icon: '🤖', popular: false },
-  { name: 'Digital Marketing', icon: '📈', popular: false },
-  { name: 'UI/UX Design', icon: '🎨', popular: false },
-  { name: 'Cloud Solutions', icon: '☁️', popular: false },
-]
+  { name: "Custom software", Icon: Code2 },
+  { name: "Web & mobile", Icon: MonitorSmartphone },
+  { name: "Automation & AI", Icon: Bot },
+  { name: "Data & dashboards", Icon: BarChart3 },
+  { name: "Design & UI/UX", Icon: PenTool },
+  { name: "Marketing & content", Icon: Megaphone },
+];
 
-const quickStats = [
-  { value: '< 2hrs', label: 'Response Time', icon: '⚡' },
-  { value: '100%', label: 'Project Success', icon: '🎯' },
-  { value: '24/7', label: 'Support Available', icon: '🛟' },
-]
+const budgets = ["< $2k", "$2k – $5k", "$5k – $15k", "$15k +", "Not sure yet"];
+
+const proofItems = [
+  { value: "< 24h", label: "Typical first reply" },
+  { value: "Direct", label: "You talk to the builder" },
+  { value: "Remote-first", label: "We work worldwide" },
+];
+
+const contactMethods = [
+  {
+    Icon: Mail,
+    label: "Email",
+    value: EMAIL,
+    note: "Replies within ~24 hours",
+    href: `mailto:${EMAIL}`,
+    cta: "Write now",
+  },
+  {
+    Icon: MessageCircle,
+    label: "WhatsApp / chat",
+    value: "Message us anytime",
+    note: "Quick questions, quick answers",
+    href: `mailto:${EMAIL}?subject=${encodeURIComponent("Quick question")}`,
+    cta: "Say hi",
+  },
+  {
+    Icon: Globe,
+    label: "Remote-first",
+    value: "We work worldwide",
+    note: "Fully remote delivery",
+    href: "#brief",
+    cta: "Start a brief",
+  },
+];
+
+const inputClass =
+  "w-full rounded-[6px] border border-glass-canvas-border bg-white px-4 py-3 text-glass-text-1 placeholder-glass-text-3 focus:outline-none focus:border-glass-accent transition-colors text-[15px]";
+
+function Field({ label, required, children }) {
+  return (
+    <label className="block">
+      <span className="block text-[13px] font-semibold text-glass-text-2 mb-2 tracking-[0.02em] uppercase">
+        {label}
+        {required && <span className="text-glass-accent ml-1">*</span>}
+      </span>
+      {children}
+    </label>
+  );
+}
 
 export default function Contact() {
-  const [selectedProject, setSelectedProject] = useState('')
-  const [animatedText, setAnimatedText] = useState('')
-  const textOptions = [
-    'Start Your Project Today',
-    'Transform Your Business',
-    'Build Something Amazing',
-    'Innovation Awaits'
-  ]
+  const root = useRef(null);
+  useScrollReveal(root);
 
-  useEffect(() => {
-    let currentIndex = 0
-    const interval = setInterval(() => {
-      setAnimatedText(textOptions[currentIndex])
-      currentIndex = (currentIndex + 1) % textOptions.length
-    }, 2000)
+  const [selectedProject, setSelectedProject] = useState("");
+  const [budget, setBudget] = useState("");
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [sent, setSent] = useState(false);
 
-    return () => clearInterval(interval)
-  }, [])
+  const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const buildMailto = () => {
+    const subject = `Project brief${selectedProject ? ` — ${selectedProject}` : ""}`;
+    const body =
+      `Name: ${form.name || "—"}\n` +
+      `Email: ${form.email || "—"}\n` +
+      `Project: ${selectedProject || "—"}\n` +
+      `Budget: ${budget || "—"}\n\n` +
+      `The brief:\n${form.message || "—"}\n`;
+    return `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSent(true);
+    window.location.href = buildMailto();
+  };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-blue-50">
-      <Head>
-        <title>Glass Inc | Contact Us - Get in Touch for IT and Business Solutions</title>
-        <meta
-          name="description"
-          content="Contact Glass Inc for expert IT and business solutions, including web development, mobile apps, AI automation, and more. Reach out via email, phone, or visit our office."
-        />
-        <meta
-          name="keywords"
-          content="Glass Inc contact, IT solutions, business solutions, web development, mobile development, AI automation, digital marketing, contact us"
-        />
-        <meta name="author" content="Glass Inc" />
-        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="language" content="en-US" />
-        <link rel="canonical" href="https://glassinc.com/contact" />
-        <meta property="og:locale" content="en_US" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Glass Inc | Contact Us" />
-        <meta
-          property="og:description"
-          content="Get in touch with Glass Inc for innovative IT and business solutions. Contact us via email, phone, or visit our office to start your project."
-        />
-        <meta property="og:url" content="https://glassinc.com/contact" />
-        <meta property="og:site_name" content="Glass Inc" />
-        <meta property="og:image" content="https://glassinc.com/assets/glass-inc-contact.jpg" />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content="Glass Inc Contact Us" />
-        <meta property="og:image:type" content="image/jpeg" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Glass Inc | Contact Us" />
-        <meta name="twitter:description" content="Reach out to Glass Inc for web development, mobile apps, AI automation, and more. Contact us today!" />
-        <meta name="twitter:image" content="https://glassinc.com/assets/glass-inc-contact.jpg" />
-        <meta name="twitter:image:alt" content="Glass Inc Contact Us" />
-        <meta name="theme-color" content="#3b82f6" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
+    <div ref={root} className="min-h-screen flex flex-col bg-glass-canvas text-glass-text-1">
       <Header />
 
       <main className="flex-1">
-        {/* Enhanced Hero Section */}
-        <section className="relative overflow-hidden">
-          {/* Dynamic background elements */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-20 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-20 right-1/3 w-80 h-80 bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
-            <div className="absolute top-1/2 right-1/4 w-64 h-64 bg-cyan-400/10 rounded-full blur-3xl animate-pulse delay-500" />
-            
-            {/* Contact-themed particles */}
-            <div className="absolute top-1/4 left-10 w-2 h-2 bg-green-400 rounded-full animate-bounce delay-300" />
-            <div className="absolute top-1/3 right-20 w-1 h-1 bg-blue-400 rounded-full animate-bounce delay-700" />
-            <div className="absolute bottom-1/3 left-1/3 w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce delay-1000" />
-          </div>
 
-          <div className="container mx-auto px-6 py-24 md:py-32 relative">
-            {/* Status badge */}
-            <div className="inline-flex items-center gap-3 px-4 py-2 bg-green-100 dark:bg-green-900/30 rounded-full mb-8 backdrop-blur-sm">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-sm font-bold tracking-wider text-green-700 dark:text-green-300">
-                AVAILABLE FOR NEW PROJECTS
-              </span>
+        {/* ===================== SECTION 1 — HERO (light) ===================== */}
+        <section className="relative overflow-hidden bg-glass-canvas">
+          {/* Dot texture */}
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-dots-light opacity-50 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]"
+          />
+          {/* Decorative glass pane — design-system §8 Pattern E */}
+          <div
+            aria-hidden
+            className="absolute right-[6%] top-[12%] hidden lg:block pointer-events-none"
+            style={{ width: 110, height: 188, border: "2.5px solid #2563EB", borderRadius: 0, opacity: 0.05 }}
+          />
+
+          <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
+            {/* Availability badge */}
+            <div className="reveal inline-flex items-center gap-2.5 mb-8">
+              <span className="inline-block w-2 h-2 rounded-full bg-glass-success" />
+              <span className="t-eyebrow text-glass-accent">Available for new projects</span>
             </div>
-            
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05] max-w-[90%]">
-              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
-                Contact Glass Inc
-              </span>
-              <span className="text-slate-900 dark:text-white block md:inline">
-                {" "}
-                —{" "}
-                <span 
-                  key={animatedText} 
-                  className="inline-block bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent animate-pulse"
-                >
-                  {animatedText}
-                </span>
-              </span>
+
+            <h1 className="reveal t-display text-glass-text-1 max-w-[20ch]">
+              Let's build the thing your business needs.
             </h1>
 
-            <p className="mt-8 text-xl md:text-2xl text-slate-600 dark:text-slate-300 max-w-3xl leading-relaxed">
-              Ready to transform your business with innovative IT solutions? Our expert team is here to discuss your vision and 
-              <span className="font-semibold text-green-600"> accelerate your success</span>.
+            <p className="reveal mt-7 max-w-2xl text-[18px] leading-[1.65] text-glass-text-2">
+              No forms shouted into the void. You write to the person who actually builds it —
+              Griffins. Custom software, automation, data and design, delivered direct.
             </p>
 
-            {/* Quick Stats */}
-            <div className="mt-12 grid grid-cols-3 gap-6 max-w-md">
-              {quickStats.map((stat, index) => (
-                <div key={stat.label} className="text-center" style={{ animationDelay: `${index * 100}ms` }}>
-                  <div className="text-2xl mb-2">{stat.icon}</div>
-                  <div className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    {stat.value}
+            {/* Proof row */}
+            <div data-stagger className="mt-12 flex flex-col sm:flex-row gap-6 sm:gap-10">
+              {proofItems.map((item) => (
+                <div key={item.label} className="flex items-center gap-3">
+                  <span className="inline-block w-1 h-1 rounded-full bg-glass-accent flex-shrink-0" />
+                  <span className="text-[14px] font-semibold text-glass-text-1">{item.value}</span>
+                  <span className="text-[14px] text-glass-text-3">— {item.label}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* CTAs */}
+            <div className="reveal mt-10 flex flex-col sm:flex-row gap-3">
+              <a href="#brief" className="btn btn-primary group">
+                Start a brief
+                <ArrowRight strokeWidth={1.75} className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </a>
+              <a href={`mailto:${EMAIL}`} className="btn btn-secondary">
+                Email directly
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* ===================== SECTION 2 — WAYS TO REACH (dark) ===================== */}
+        <section className="relative bg-glass-ink text-glass-text-dark">
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-grid-dark opacity-60 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
+          />
+
+          <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
+            <div className="reveal max-w-3xl mb-14">
+              <span className="t-eyebrow text-glass-accent-on-dark">02 — Ways to reach us</span>
+              <h2 className="t-h2 mt-4 text-glass-text-dark">Pick whatever's least friction.</h2>
+            </div>
+
+            <div data-stagger className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {contactMethods.map(({ Icon, label, value, note, href, cta }) => (
+                <a key={label} href={href} className="card-dark p-6 md:p-8 group flex flex-col gap-5">
+                  <span className="icon-tile icon-tile-dark transition-colors">
+                    <Icon strokeWidth={1.5} className="w-5 h-5 group-hover:text-glass-accent-on-dark transition-colors" />
+                  </span>
+                  <div className="flex-1">
+                    <h3 className="text-[17px] font-semibold tracking-[-0.01em] text-glass-text-dark mb-1 group-hover:text-glass-accent-on-dark transition-colors">{label}</h3>
+                    <p className="text-[15px] font-medium text-glass-text-dark break-all">{value}</p>
+                    <p className="mt-1 text-[14px] text-glass-text-muted">{note}</p>
                   </div>
-                  <div className="text-xs text-slate-500">{stat.label}</div>
-                </div>
+                  <span className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-glass-accent-on-dark group-hover:gap-2.5 transition-all duration-150">
+                    {cta}
+                    <ArrowRight strokeWidth={1.75} className="w-3.5 h-3.5" />
+                  </span>
+                </a>
               ))}
-            </div>
-
-            <div className="mt-12 flex flex-col sm:flex-row gap-4">
-              <Link
-                href="mailto:info@glassinc.com"
-                className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-blue-600 px-8 py-4 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-              >
-                Get in Touch
-                <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
-              </Link>
-              <Link
-                href="/services"
-                className="inline-flex items-center justify-center rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-8 py-4 font-semibold text-slate-700 dark:text-slate-300 backdrop-blur hover:bg-white dark:hover:bg-slate-800 transition-all duration-200"
-              >
-                Explore Our Services
-              </Link>
             </div>
           </div>
         </section>
 
-        {/* Project Type Selector */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">What type of project do you have in mind?</h2>
-              <p className="text-slate-600">Select one to help us understand your needs better</p>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-              {projectTypes.map((project) => (
-                <button
-                  key={project.name}
-                  onClick={() => setSelectedProject(project.name)}
-                  className={`relative p-6 rounded-xl border-2 transition-all duration-200 ${
-                    selectedProject === project.name
-                      ? 'border-blue-500 bg-blue-50 shadow-lg'
-                      : 'border-slate-200 hover:border-slate-300 hover:shadow-md'
-                  }`}
-                >
-                  {project.popular && (
-                    <div className="absolute -top-2 -right-2 px-2 py-1 bg-orange-500 text-white text-xs rounded-full">
-                      Popular
-                    </div>
-                  )}
-                  <div className="text-3xl mb-2">{project.icon}</div>
-                  <div className="font-semibold text-sm">{project.name}</div>
-                </button>
-              ))}
-            </div>
-            {selectedProject && (
-              <div className="mt-8 text-center">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 rounded-full">
-                  <span className="text-blue-600 font-medium">Selected: {selectedProject}</span>
-                  <span className="text-blue-400">✓</span>
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* Enhanced Contact Info */}
-        <section className="py-24 bg-gradient-to-b from-slate-50 to-white">
-          <div className="container mx-auto px-6">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold tracking-tight mb-6">
-                <span className="bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
-                  Multiple Ways to Connect
-                </span>
-              </h2>
-              <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                Choose the method that works best for you. We're here to answer your questions and help bring your ideas to life.
+        {/* ===================== SECTION 3 — THE BRIEF FORM (light) ===================== */}
+        <section id="brief" className="scroll-mt-20 bg-glass-canvas">
+          <div className="mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
+            <div className="reveal max-w-3xl mb-14">
+              <span className="t-eyebrow text-glass-accent">03 — The brief</span>
+              <h2 className="t-h2 mt-4 text-glass-text-1">Tell us about your project.</h2>
+              <p className="mt-5 text-[17px] leading-relaxed text-glass-text-2 max-w-2xl">
+                A few lines is plenty — we'll ask the rest. This opens your email app, pre-filled.
               </p>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              {contactInfo.map((info, index) => (
-                <Link
-                  key={info.name}
-                  href={info.link}
-                  className="group relative rounded-2xl bg-white border border-slate-200 p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
-                  style={{ animationDelay: `${index * 150}ms` }}
-                >
-                  <div className={`absolute inset-0 bg-gradient-to-br ${info.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300`} />
-                  
-                  <div className={`inline-flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br ${info.gradient} text-2xl mb-6 transform group-hover:scale-110 transition-transform duration-200`}>
-                    {info.icon}
-                  </div>
-                  
-                  <h3 className="text-2xl font-bold text-slate-900 mb-2">{info.name}</h3>
-                  <p className="text-slate-600 mb-4">{info.description}</p>
-                  <p className="text-slate-900 font-semibold mb-4">{info.value}</p>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-500">{info.response}</span>
-                    <span className={`text-sm font-semibold bg-gradient-to-r ${info.gradient} bg-clip-text text-transparent group-hover:translate-x-1 transition-transform`}>
-                      {info.name === 'Address' ? 'View Map →' : `Contact Now →`}
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
 
-        {/* Interactive Contact Form Preview */}
-        <section className="py-24 bg-gradient-to-b from-white to-slate-50 relative overflow-hidden">
-          <div className="container mx-auto px-6">
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-12">
-                <h2 className="text-4xl font-bold mb-4">Start Your Project</h2>
-                <p className="text-xl text-slate-600">Tell us about your vision and we'll get back to you within 2 hours</p>
-              </div>
-              
-              {/* Form Preview/CTA */}
-              <div className="bg-white rounded-2xl p-8 shadow-xl border border-slate-200">
-                <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="reveal max-w-3xl mx-auto card-light p-7 md:p-10">
+              {sent ? (
+                /* ---- Success state ---- */
+                <div className="flex flex-col items-center text-center py-10 gap-5">
+                  <span className="icon-tile icon-tile-light" style={{ width: 56, height: 56 }}>
+                    <MailCheck strokeWidth={1.5} className="w-6 h-6 text-glass-accent" />
+                  </span>
                   <div>
-                    <h3 className="text-2xl font-bold mb-4">Ready to get started?</h3>
-                    <p className="text-slate-600 mb-6">
-                      Send us an email with your project details, or schedule a call to discuss your requirements in detail.
+                    <h3 className="t-h3 text-glass-text-1 mb-3">Brief ready</h3>
+                    <p className="text-[15px] leading-relaxed text-glass-text-2 max-w-md">
+                      Your email app is opening with everything filled in. If it didn't launch,
+                      write straight to{" "}
+                      <a
+                        href={`mailto:${EMAIL}`}
+                        className="text-glass-accent font-semibold hover:underline"
+                      >
+                        {EMAIL}
+                      </a>
+                      .
                     </p>
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="text-sm text-slate-600">Free initial consultation</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="text-sm text-slate-600">Detailed project proposal</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span className="text-sm text-slate-600">Timeline and budget estimate</span>
-                      </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSent(false)}
+                    className="mt-2 inline-flex items-center gap-2 text-[13px] font-semibold text-glass-text-3 hover:text-glass-text-1 transition-colors"
+                  >
+                    <ArrowLeft strokeWidth={1.5} className="w-4 h-4" />
+                    Edit the brief
+                  </button>
+                </div>
+              ) : (
+                /* ---- Form ---- */
+                <form onSubmit={handleSubmit} className="space-y-8">
+
+                  {/* Project type */}
+                  <div>
+                    <span className="block text-[13px] font-semibold text-glass-text-2 mb-3 tracking-[0.02em] uppercase">
+                      What type of project?
+                    </span>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {projectTypes.map(({ name, Icon }) => {
+                        const active = selectedProject === name;
+                        return (
+                          <button
+                            key={name}
+                            type="button"
+                            onClick={() => setSelectedProject(active ? "" : name)}
+                            className={`flex items-center gap-3 px-4 py-3 rounded-[6px] border text-left transition-colors duration-150 ${
+                              active
+                                ? "border-glass-accent bg-glass-accent-subtle text-glass-accent"
+                                : "border-glass-canvas-border bg-white text-glass-text-2 hover:border-glass-text-3"
+                            }`}
+                          >
+                            <Icon strokeWidth={1.5} className="w-4 h-4 flex-shrink-0" />
+                            <span className="text-[13px] font-semibold leading-snug">{name}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
-                  
-                  <div className="space-y-4">
-                    <Link
-                      href="mailto:info@glassinc.com?subject=New Project Inquiry&body=Hi Glass Inc team,%0D%0A%0D%0AI'm interested in discussing a project with you.%0D%0A%0D%0AProject Type: [Please specify]%0D%0ATimeline: [When do you need this completed?]%0D%0ABudget Range: [Optional]%0D%0A%0D%0AProject Details:%0D%0A[Please describe your project, goals, and any specific requirements]%0D%0A%0D%0AThank you!"
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-                    >
-                      Send Project Email
-                      <span>→</span>
-                    </Link>
-                    <Link
-                      href="tel:+15551234567"
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl border-2 border-slate-200 bg-white px-6 py-4 font-semibold text-slate-700 hover:bg-slate-50 transition-all duration-200"
-                    >
-                      Schedule a Call
-                      <span>📞</span>
-                    </Link>
+
+                  {/* Name + Email */}
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <Field label="Your name" required>
+                      <input
+                        required
+                        value={form.name}
+                        onChange={set("name")}
+                        placeholder="Jane from Acme Ltd."
+                        className={inputClass}
+                      />
+                    </Field>
+                    <Field label="Email" required>
+                      <input
+                        required
+                        type="email"
+                        value={form.email}
+                        onChange={set("email")}
+                        placeholder="you@company.com"
+                        className={inputClass}
+                      />
+                    </Field>
                   </div>
-                </div>
-              </div>
+
+                  {/* Budget */}
+                  <div>
+                    <span className="block text-[13px] font-semibold text-glass-text-2 mb-3 tracking-[0.02em] uppercase">
+                      Rough budget
+                    </span>
+                    <div className="flex flex-wrap gap-2.5">
+                      {budgets.map((b) => {
+                        const on = budget === b;
+                        return (
+                          <button
+                            key={b}
+                            type="button"
+                            onClick={() => setBudget(on ? "" : b)}
+                            className={`px-4 py-2 rounded-[6px] border text-[13px] font-semibold transition-colors duration-150 ${
+                              on
+                                ? "border-glass-accent bg-glass-accent-subtle text-glass-accent"
+                                : "border-glass-canvas-border bg-white text-glass-text-2 hover:border-glass-text-3"
+                            }`}
+                          >
+                            {b}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Message */}
+                  <Field label="Tell us about it" required>
+                    <textarea
+                      required
+                      rows={4}
+                      value={form.message}
+                      onChange={set("message")}
+                      placeholder="What are you trying to fix, build, or automate? What does success look like?"
+                      className={`${inputClass} resize-none`}
+                    />
+                  </Field>
+
+                  {/* Submit */}
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4 pt-1">
+                    <button type="submit" className="btn btn-primary group">
+                      Send the brief
+                      <ArrowRight strokeWidth={1.75} className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                    </button>
+                    <p className="text-[12px] text-glass-text-3 leading-relaxed">
+                      Opens your email app, pre-filled. No data stored. No spam.
+                    </p>
+                  </div>
+
+                </form>
+              )}
             </div>
           </div>
         </section>
 
-        {/* Enhanced CTA Section */}
-        <section className="py-24 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 relative overflow-hidden">
-          <div className="absolute inset-0 bg-black/10" />
-          <div className="absolute inset-0">
-            <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
-          </div>
-          
-          <div className="container mx-auto px-6 text-center relative">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Ready to Collaborate?
-            </h2>
-            <p className="text-xl text-white/90 max-w-3xl mx-auto mb-12 leading-relaxed">
-              Let's work together to create innovative solutions tailored to your business needs. Your next breakthrough is just one conversation away.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="mailto:info@glassinc.com"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-purple-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-              >
-                Send Us an Email
-                <span>→</span>
-              </Link>
-              <Link
-                href="/"
-                className="inline-flex items-center justify-center rounded-xl border-2 border-white/30 bg-white/10 px-8 py-4 text-lg font-semibold text-white backdrop-blur hover:bg-white/20 transition-all duration-200"
-              >
-                Back to Home
-              </Link>
+        {/* ===================== SECTION 4 — CLOSING (dark) ===================== */}
+        <section className="bg-glass-ink text-glass-text-dark">
+          <div className="mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
+            <div className="reveal max-w-3xl">
+              <h2 className="t-h1 text-glass-text-dark">Clarity. Precision. Innovation.</h2>
+              <p className="mt-6 text-[18px] leading-relaxed text-glass-text-muted max-w-xl">
+                Built for businesses serious about growing. Direct. Honest. Delivered.
+              </p>
+              <div className="mt-9 flex flex-col sm:flex-row gap-3">
+                <a
+                  href={`mailto:${EMAIL}`}
+                  className="btn btn-on-dark group"
+                >
+                  Send us an email
+                  <ArrowRight strokeWidth={1.75} className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </a>
+                <Link href="/" className="btn btn-ghost">
+                  Back to home
+                </Link>
+              </div>
+              <p className="mt-6 text-[13px] text-glass-text-muted">{EMAIL}</p>
             </div>
           </div>
         </section>
+
       </main>
 
       <Footer />
     </div>
-  )
+  );
 }

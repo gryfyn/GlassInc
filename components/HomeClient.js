@@ -11,7 +11,6 @@ import Header from "./Header";
 import Footer from "./Footer";
 import ProductFrame from "./ProductFrame";
 import DashboardMock from "./DashboardMock";
-import SystemDiagram from "./SystemDiagram";
 import GrainOverlay from "./GrainOverlay";
 import useScrollReveal from "./useScrollReveal";
 import useMagnetic from "./useMagnetic";
@@ -60,23 +59,33 @@ const steps = [
   { Icon: PackageCheck, name: "Deliver", desc: "Software your team actually uses — proper handover, built for adoption, not just shipped." },
 ];
 
+const PROJECT_VISUAL = {
+  software: { img: "/assets/project-healthcare.jpg", label: "healthcare" },
+  operations: { img: "/assets/project-operations.jpg", label: "operations" },
+  open: { img: "/assets/project-placeholder.jpg", label: "in progress" },
+};
+
 function ProjectVisual({ variant }) {
-  if (variant === "software") return <SystemDiagram />;
-  if (variant === "operations") {
-    return (
-      <ProductFrame tone="dark" glow label="operations">
-        <DashboardMock variant="operations" />
-      </ProductFrame>
-    );
-  }
-  // open / in-progress
+  const { img, label } = PROJECT_VISUAL[variant] || PROJECT_VISUAL.software;
+  const isOpen = variant === "open";
   return (
-    <ProductFrame tone="dark" glow={false} label="in progress">
-      <div className="relative flex flex-col items-center justify-center text-center gap-3 py-16 px-6 bg-glass-ink">
-        <div className="relative w-40 h-1.5 overflow-hidden" style={{ background: "#1E1E22" }}>
-          <span className="accent-shimmer absolute inset-y-0 left-0 w-1/3" style={{ background: "#2563EB" }} />
-        </div>
-        <p className="text-[13px] uppercase tracking-[0.12em] text-glass-text-muted">Next build · reserved</p>
+    <ProductFrame tone="dark" glow={!isOpen} label={label}>
+      <div className="relative aspect-[16/10] overflow-hidden bg-glass-ink">
+        <img src={img} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover photo-duotone" />
+        {/* accent duotone wash — keeps stock imagery on-brand (single accent) */}
+        <span
+          aria-hidden
+          className="absolute inset-0"
+          style={{ background: "linear-gradient(135deg, rgba(37,99,235,0.50), rgba(10,10,11,0.30))", mixBlendMode: "color" }}
+        />
+        {isOpen && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-glass-ink/55">
+            <div className="relative w-40 h-1.5 overflow-hidden" style={{ background: "#1E1E22" }}>
+              <span className="accent-shimmer absolute inset-y-0 left-0 w-1/3" style={{ background: "#2563EB" }} />
+            </div>
+            <p className="text-[13px] uppercase tracking-[0.12em] text-glass-text-dark">Next build · reserved</p>
+          </div>
+        )}
       </div>
     </ProductFrame>
   );
