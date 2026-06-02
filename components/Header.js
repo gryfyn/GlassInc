@@ -1,112 +1,94 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Menu, X, ArrowRight } from "lucide-react";
+import Brand from "./Brand";
+
+const navigationItems = [
+  { href: "/", label: "Home" },
+  { href: "/services", label: "Services" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const navigationItems = [
-    { href: "/", label: "Home" },
-    { href: "/services", label: "Services" },
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
-  ];
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-white/80 dark:bg-[#0b1220]/90 border-b border-slate-200/60 dark:border-slate-700/60">
-      {/* Subtle top accent line */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/50 to-transparent" />
-      
-      <div className="container mx-auto px-6">
+    <header
+      className={`sticky top-0 z-50 w-full transition-colors duration-300 ${
+        scrolled ? "bg-glass-canvas/85 backdrop-blur-md border-b border-glass-canvas-border" : "bg-transparent border-b border-transparent"
+      }`}
+    >
+      <div className="mx-auto max-w-6xl px-6 md:px-8 lg:px-12">
         <div className="flex h-16 items-center justify-between">
-          
-          {/* Brand Logo - Enhanced */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative">
-              <div className="h-9 w-[22px] border-2 border-blue-500 bg-gradient-to-b from-blue-500/20 to-transparent backdrop-blur-sm transform group-hover:scale-110 transition-all duration-300" />
-              <div className="absolute inset-0 h-9 w-[22px] border-2 border-blue-500/30 animate-pulse" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-lg font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
-                Glass Inc
-              </span>
-              <div className="text-[10px] text-blue-500 font-medium tracking-[0.15em] -mt-1">
-                ELITE IT SOLUTIONS
-              </div>
-            </div>
+          {/* Brand */}
+          <Link href="/" className="group flex items-center" onClick={() => setOpen(false)}>
+            <Brand size="sm" />
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-1">
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-8">
             {navigationItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 group"
+                className="text-[14px] font-medium text-glass-text-2 hover:text-glass-text-1 transition-colors duration-150"
               >
                 {item.label}
-                {/* Hover underline effect */}
-                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200" />
               </Link>
             ))}
           </nav>
 
-          {/* CTA Button - Desktop */}
-          <div className="hidden md:flex items-center gap-4">
-            <Link
-              href="/contact"
-              className="relative px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-            >
-              <span className="relative z-10">Get Started</span>
-              {/* Subtle shimmer effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500 rounded-lg" />
+          {/* CTA */}
+          <div className="hidden md:block">
+            <Link href="/contact" className="btn btn-primary">
+              Start a project
+              <ArrowRight strokeWidth={1.75} className="w-4 h-4" />
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile toggle */}
           <button
             aria-label="Toggle menu"
             onClick={() => setOpen(!open)}
-            className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors duration-200"
+            className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-[6px] border border-glass-canvas-border bg-white/70 text-glass-text-1"
           >
-            {open ? (
-              <X className="h-5 w-5 text-slate-700 dark:text-slate-300" />
-            ) : (
-              <Menu className="h-5 w-5 text-slate-700 dark:text-slate-300" />
-            )}
+            {open ? <X strokeWidth={1.75} className="h-5 w-5" /> : <Menu strokeWidth={1.75} className="h-5 w-5" />}
           </button>
         </div>
 
-        {/* Mobile Navigation Menu */}
+        {/* Mobile menu */}
         {open && (
-          <div className="md:hidden">
-            <nav className="py-4 border-t border-slate-200/60 dark:border-slate-700/60 mt-2">
-              <ul className="space-y-1">
-                {navigationItems.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      onClick={() => setOpen(false)}
-                      className="flex items-center px-4 py-3 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg transition-all duration-200"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-                {/* Mobile CTA */}
-                <li className="pt-3 border-t border-slate-200/60 dark:border-slate-700/60 mt-3">
+          <nav className="md:hidden pb-4 pt-1 border-t border-glass-canvas-border bg-glass-canvas/95 backdrop-blur-md">
+            <ul className="space-y-1 pt-3">
+              {navigationItems.map((item) => (
+                <li key={item.href}>
                   <Link
-                    href="/contact"
+                    href={item.href}
                     onClick={() => setOpen(false)}
-                    className="flex items-center justify-center px-4 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg transition-all duration-200"
+                    className="block px-2 py-3 text-[15px] font-medium text-glass-text-1 hover:text-glass-accent transition-colors"
                   >
-                    Get Started
+                    {item.label}
                   </Link>
                 </li>
-              </ul>
-            </nav>
-          </div>
+              ))}
+              <li className="pt-3">
+                <Link href="/contact" onClick={() => setOpen(false)} className="btn btn-primary w-full justify-center">
+                  Start a project
+                  <ArrowRight strokeWidth={1.75} className="w-4 h-4" />
+                </Link>
+              </li>
+            </ul>
+          </nav>
         )}
       </div>
     </header>

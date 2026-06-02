@@ -1,344 +1,301 @@
 "use client";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import TextType from "../components/TypeText";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
-import "swiper/css";
+import { useRef, useEffect } from "react";
+import Link from "next/link";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  ArrowRight, ArrowUpRight, Code2, Bot, BarChart3, MonitorSmartphone,
+  PenTool, Megaphone, Clapperboard, Check, MessagesSquare, Hammer, PackageCheck,
+} from "lucide-react";
+import Header from "./Header";
+import Footer from "./Footer";
+import ProductFrame from "./ProductFrame";
+import DashboardMock from "./DashboardMock";
+import SystemDiagram from "./SystemDiagram";
+import GrainOverlay from "./GrainOverlay";
+import useScrollReveal from "./useScrollReveal";
+import useMagnetic from "./useMagnetic";
+
+const EMAIL = "glassinctechnologies@gmail.com";
+
+const HERO_WORDS = ["We", "build", "software", "that", "runs", "your", "business."];
 
 const services = [
-  { name: "Web Development", desc: "High-performance web apps.", icon: "🧱", gradient: "from-blue-500 to-cyan-500" },
-  { name: "Mobile Development", desc: "iOS/Android cross‑platform.", icon: "📱", gradient: "from-purple-500 to-pink-500" },
-  { name: "AI Automation", desc: "Agents and LLM workflows.", icon: "🤖", gradient: "from-emerald-500 to-teal-500" },
-  { name: "Digital Marketing", desc: "Acquisition and analytics.", icon: "📣", gradient: "from-orange-500 to-red-500" },
-  { name: "Graphic Design", desc: "Brand and UI/UX systems.", icon: "🎨", gradient: "from-violet-500 to-purple-500" },
-  { name: "SEO", desc: "Technical + content SEO.", icon: "🔎", gradient: "from-green-500 to-emerald-500" },
-  { name: "Software Development", desc: "Custom platforms.", icon: "🧩", gradient: "from-indigo-500 to-blue-500" },
-  { name: "Cloud Solutions", desc: "Scalable infrastructure.", icon: "☁️", gradient: "from-sky-500 to-blue-500" },
-  { name: "Data Analytics", desc: "Decisions from data.", icon: "📊", gradient: "from-yellow-500 to-orange-500" },
+  { Icon: Code2, name: "Custom software development", desc: "Management systems and operational tools built around exactly how your business works." },
+  { Icon: Bot, name: "Business automation & AI", desc: "We automate the manual tasks eating your team's time. You keep the decisions." },
+  { Icon: BarChart3, name: "Data analytics & dashboards", desc: "Your data turned into dashboards and reports you can actually use." },
+  { Icon: MonitorSmartphone, name: "Web & mobile development", desc: "Fast, responsive websites and cross-platform apps, built to scale." },
+  { Icon: PenTool, name: "Graphic design & UI/UX", desc: "Brand identity and interfaces that look as good as they work." },
+  { Icon: Megaphone, name: "Digital marketing & SEO", desc: "Content, SEO, and campaigns that bring the right clients to your door." },
+  { Icon: Clapperboard, name: "Photo & video content", desc: "Product photography, brand video, and software walkthroughs." },
 ];
 
 const projects = [
-  { 
-    title: "E‑commerce Platform", 
-    tag: "Web Development", 
-    desc: "Headless storefront with performance and conversion.", 
-    image: "/placeholder.svg",
-    metrics: ["300% increase in conversions", "50ms load time", "99.9% uptime"]
+  {
+    variant: "software",
+    tag: "Healthcare · 2024–2025",
+    title: "Resident Treatment Facility Management System",
+    desc: "A complete management platform for a treatment & rehabilitation facility — intake, scheduling, staff, and reporting in one place.",
+    outcome: "Replaced manual spreadsheet tracking for an entire facility. Staff onboarded within a week.",
   },
-  { 
-    title: "Fitness Mobile App", 
-    tag: "Mobile Development", 
-    desc: "Offline sync, subscriptions, analytics.", 
-    image: "/placeholder.svg",
-    metrics: ["100K+ downloads", "4.8★ rating", "Real-time sync"]
+  {
+    variant: "operations",
+    tag: "SME · 2024",
+    title: "Business Operations Management System",
+    desc: "A bespoke operations platform matched to an SME's exact workflows, data tracking, and staff records.",
+    outcome: "Eliminated manual tracking across three departments. Live visibility into daily operations.",
   },
-  { 
-    title: "AI Support Agent", 
-    tag: "AI Automation", 
-    desc: "LLM‑powered agent with CRM integration.", 
-    image: "/placeholder.svg",
-    metrics: ["80% query resolution", "24/7 availability", "Multi-language support"]
+  {
+    variant: "open",
+    tag: "Open",
+    title: "Your project here",
+    desc: "This space is reserved for the next build. Tell us what you want to make.",
+    outcome: null,
   },
 ];
 
-export default function Page() {
+const steps = [
+  { Icon: MessagesSquare, name: "Talk", desc: "A free, honest call about your biggest operational problem. No pitch, no jargon." },
+  { Icon: Hammer, name: "Build", desc: "You work directly with the person building it. Weekly progress, clear documentation." },
+  { Icon: PackageCheck, name: "Deliver", desc: "Software your team actually uses — proper handover, built for adoption, not just shipped." },
+];
+
+function ProjectVisual({ variant }) {
+  if (variant === "software") return <SystemDiagram />;
+  if (variant === "operations") {
+    return (
+      <ProductFrame tone="dark" glow label="operations">
+        <DashboardMock variant="operations" />
+      </ProductFrame>
+    );
+  }
+  // open / in-progress
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <ProductFrame tone="dark" glow={false} label="in progress">
+      <div className="relative flex flex-col items-center justify-center text-center gap-3 py-16 px-6 bg-glass-ink">
+        <div className="relative w-40 h-1.5 overflow-hidden" style={{ background: "#1E1E22" }}>
+          <span className="accent-shimmer absolute inset-y-0 left-0 w-1/3" style={{ background: "#2563EB" }} />
+        </div>
+        <p className="text-[13px] uppercase tracking-[0.12em] text-glass-text-muted">Next build · reserved</p>
+      </div>
+    </ProductFrame>
+  );
+}
+
+export default function HomeClient() {
+  const root = useRef(null);
+  useScrollReveal(root);
+  const magneticCta = useMagnetic();
+  const heroVisual = useRef(null);
+
+  // Hero product-frame parallax (decorative, reduced-motion safe)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    gsap.registerPlugin(ScrollTrigger);
+    const ctx = gsap.context(() => {
+      if (!heroVisual.current) return;
+      gsap.to(heroVisual.current, {
+        yPercent: -10,
+        ease: "none",
+        scrollTrigger: { trigger: heroVisual.current, start: "top 80%", end: "bottom top", scrub: 1.5 },
+      });
+    }, root);
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <div ref={root} className="min-h-screen flex flex-col bg-glass-canvas text-glass-text-1">
       <Header />
+
       <main className="flex-1">
-        {/* Enhanced Hero Section - Mobile Optimized */}
-        <section className="relative overflow-hidden">
-          {/* Dynamic background elements - Reduced for mobile */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-10 md:top-20 left-1/4 w-48 md:w-96 h-48 md:h-96 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-10 md:bottom-20 right-1/3 w-40 md:w-80 h-40 md:h-80 bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
-            <div className="absolute top-1/2 right-1/4 w-32 md:w-64 h-32 md:h-64 bg-cyan-400/10 rounded-full blur-3xl animate-pulse delay-500" />
-            
-            {/* Floating particles - Hidden on small screens */}
-            <div className="hidden sm:block absolute top-1/3 left-10 w-2 h-2 bg-blue-400 rounded-full animate-bounce delay-300" />
-            <div className="hidden sm:block absolute top-1/4 right-20 w-1 h-1 bg-purple-400 rounded-full animate-bounce delay-700" />
-            <div className="hidden sm:block absolute bottom-1/3 left-1/3 w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce delay-1000" />
-          </div>
-
-          <div className="container mx-auto px-4 md:px-6 py-16 md:py-24 lg:py-32 relative">
-            {/* Brand badge - Mobile optimized */}
-            <div className="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-6 md:mb-8 backdrop-blur-sm">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-              <span className="text-xs md:text-sm font-bold tracking-wider text-blue-700 dark:text-blue-300">
-                CLARITY. PRECISION. INNOVATION
-              </span>
-            </div>
-            
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black tracking-tight leading-[1.1] md:leading-[1.05] max-w-[95%] md:max-w-[90%]">
-              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
-                Glass Inc
-              </span>
-              <span className="text-slate-900 dark:text-white block">
-                <span className="hidden md:inline">— </span>
-                <TextType
-                  text="IT and Business Solutions, brilliantly executed."
-                  typingSpeed={75}
-                  showCursor={true}
-                  cursorCharacter="|"
-                />
-              </span>
-            </h1>
-
-            <p className="mt-6 md:mt-8 text-base sm:text-lg md:text-xl lg:text-2xl text-slate-600 dark:text-slate-300 max-w-full md:max-w-3xl leading-relaxed">
-              We build standout products across web, mobile, AI automation, and growth. 
-              <span className="font-semibold text-blue-600"> Senior talent.</span>
-              <span className="font-semibold text-purple-600"> Faster delivery.</span>
-              <span className="font-semibold text-cyan-600"> Transparent outcomes.</span>
-            </p>
-
-            {/* Enhanced CTA buttons - Mobile stacked */}
-            {/* Enhanced CTA buttons */}
-            <div className="mt-12 flex flex-col sm:flex-row gap-4">
-              <a 
-                href="/contact" 
-                className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-4 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-              >
-                Start Your Project
-                <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
-              </a>
-              <a 
-                href="/services" 
-                className="inline-flex items-center justify-center rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 px-8 py-4 font-semibold text-slate-700 dark:text-slate-300 backdrop-blur hover:bg-white dark:hover:bg-slate-800 transition-all duration-200"
-              >
-                View Services
-              </a>
-            </div>
-
-            {/* Trust indicators - Mobile optimized */}
-            <div className="mt-12 md:mt-16 grid grid-cols-3 gap-4 md:gap-8 max-w-xs md:max-w-md">
-              <div className="text-center">
-                <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">150+</div>
-                <div className="text-xs md:text-sm text-slate-500">Projects</div>
+        {/* ===================== HERO (dark, asymmetric) ===================== */}
+        <section className="relative overflow-hidden bg-glass-ink text-glass-text-dark">
+          <div className="absolute inset-0 bg-grid-dark opacity-50 pointer-events-none [mask-image:linear-gradient(to_bottom,black_60%,transparent)]" />
+          <GrainOverlay />
+          <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 pt-24 pb-20 md:pt-28 md:pb-28 lg:pt-32">
+            <div className="grid lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+              {/* Left: copy */}
+              <div className="lg:col-span-6">
+                <div className="inline-flex items-center gap-2.5 mb-7">
+                  <span className="t-eyebrow text-glass-accent-on-dark">01 — Software Studio</span>
+                </div>
+                <h1 className="t-display-xl text-glass-text-dark max-w-[14ch]">
+                  {HERO_WORDS.map((w, i) => (
+                    <span key={i} className="hero-word" style={{ animationDelay: `${0.1 + i * 0.07}s` }}>
+                      {w}{i < HERO_WORDS.length - 1 ? " " : ""}
+                    </span>
+                  ))}
+                </h1>
+                <p className="mt-7 max-w-xl text-[18px] leading-[1.65] text-glass-text-muted">
+                  We partner with small and mid-size businesses to build what runs them — custom
+                  software, automation, data, design and content. Everything digital, from one team.
+                </p>
+                <div className="mt-9 flex flex-col sm:flex-row gap-3">
+                  <Link ref={magneticCta} href="/contact" className="btn btn-primary group">
+                    Start your project
+                    <ArrowRight strokeWidth={1.75} className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                  </Link>
+                  <a href="#work" className="btn btn-ghost">See our work</a>
+                </div>
+                <p className="mt-8 t-eyebrow text-glass-text-muted">Remote-first · Worldwide</p>
               </div>
-              <div className="text-center">
-                <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">98%</div>
-                <div className="text-xs md:text-sm text-slate-500">Satisfaction</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">24/7</div>
-                <div className="text-xs md:text-sm text-slate-500">Support</div>
+
+              {/* Right: product frame */}
+              <div className="lg:col-span-6">
+                <div ref={heroVisual} className="relative lg:pl-6">
+                  <ProductFrame tone="dark" glow label="operations">
+                    <DashboardMock variant="operations" />
+                  </ProductFrame>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Dark Services Carousel Section - Mobile Optimized */}
-        <section className="py-16 md:py-24 bg-slate-900 relative overflow-hidden">
-          {/* Dark background effects - Simplified for mobile */}
-          <div className="absolute inset-0 opacity-30">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500/20 via-transparent to-purple-500/20" />
-            <div className="hidden md:block absolute top-20 left-20 w-48 h-px bg-cyan-400/40" />
-            <div className="hidden md:block absolute bottom-32 right-1/4 w-32 h-px bg-purple-400/40 rotate-45" />
-            <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-slate-600/50 to-transparent" />
-            <div className="hidden md:block absolute bottom-10 right-10 w-36 h-px bg-blue-400/40 -rotate-12" />
+        {/* ===================== POSITIONING (light) ===================== */}
+        <section className="relative bg-glass-canvas">
+          <div className="absolute inset-0 bg-dots-light opacity-40 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
+          <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-20 md:py-24">
+            <p className="reveal t-h2 text-glass-text-1 max-w-[20ch]">
+              One team for everything digital.
+              <span className="text-glass-text-3"> No agencies to coordinate, no handoffs.</span>
+            </p>
           </div>
+        </section>
 
-          <div className="container mx-auto px-4 md:px-6 relative">
-            <div className="text-center mb-12 md:mb-16">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 md:mb-6">
-                <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-                  Expertise that ships
-                </span>
-              </h2>
-              <p className="text-lg md:text-xl text-slate-300 max-w-full md:max-w-3xl mx-auto leading-relaxed px-4">
-                Comprehensive solutions designed to accelerate your digital transformation and drive measurable results.
+        {/* ===================== SERVICES (dark) ===================== */}
+        <section className="relative bg-glass-ink text-glass-text-dark">
+          <div className="absolute inset-0 bg-grid-dark opacity-60 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]" />
+          <GrainOverlay />
+          <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
+            <div className="reveal max-w-3xl mb-14">
+              <span className="t-eyebrow text-glass-accent-on-dark">02 — What we do</span>
+              <h2 className="t-h2 mt-4 text-glass-text-dark">Everything your business needs to go digital</h2>
+              <p className="mt-5 text-[18px] leading-relaxed text-glass-text-muted max-w-2xl">
+                One team handles your software, automation, data, brand, and content — no handoffs,
+                no agencies to coordinate, always one person to call.
               </p>
             </div>
-            
-            {/* Carousel Container - Mobile responsive */}
-            <div className="relative max-w-7xl mx-auto">
-              <Swiper
-                modules={[Autoplay]}
-                spaceBetween={20}
-                slidesPerView={1} // Mobile: 1 slide
-                breakpoints={{
-                  640: {
-                    slidesPerView: 2, // Tablet: 2 slides
-                    spaceBetween: 24,
-                  },
-                  1024: {
-                    slidesPerView: 3, // Desktop: 3 slides
-                    spaceBetween: 30,
-                  },
-                }}
-                autoplay={{
-                  delay: 3000,
-                  disableOnInteraction: false,
-                  pauseOnMouseEnter: true,
-                }}
-                loop={true}
-                className="mySwiper !pb-8"
-                style={{
-                  '--swiper-navigation-color': 'transparent', // Hide navigation
-                  '--swiper-pagination-color': '#60a5fa', // Blue pagination dots
-                }}
-              >
-                {services.map((service, index) => (
-                  <SwiperSlide key={index}>
-                    <div className="group relative bg-slate-800 border border-slate-700 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 rounded-2xl overflow-hidden mx-2 md:mx-0">
-                      {/* Gradient overlay */}
-                      <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-15 transition-opacity duration-300`} />
-                      
-                      {/* Glitch borders */}
-                      <div className="absolute -top-px left-4 right-8 h-px bg-gradient-to-r from-transparent via-slate-600 to-transparent" />
-                      <div className="absolute -bottom-px left-8 right-4 h-px bg-gradient-to-r from-transparent via-slate-600 to-transparent" />
-                      
-                      <div className="p-6 md:p-8 relative">
-                        {/* Icon */}
-                        <div className={`inline-flex h-12 w-12 md:h-16 md:w-16 items-center justify-center bg-gradient-to-br ${service.gradient} text-xl md:text-2xl mb-4 md:mb-6 transform group-hover:scale-110 transition-transform duration-200 rounded-lg md:rounded-xl`}>
-                          {service.icon}
-                        </div>
-                        
-                        <h3 className="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">{service.name}</h3>
-                        <p className="text-slate-300 leading-relaxed mb-4 md:mb-6 text-sm md:text-base">{service.desc}</p>
-                        
-                        {/* Action button */}
-                        <button className={`w-full py-3 px-4 md:px-6 bg-gradient-to-r ${service.gradient} text-white font-semibold rounded-lg opacity-80 hover:opacity-100 transition-all duration-200 transform hover:scale-105 text-sm md:text-base`}>
-                          Learn More
-                        </button>
-                      </div>
 
-                      {/* Random glitch elements - Responsive */}
-                      {index % 3 === 0 && (
-                        <div className="absolute top-2 right-2 w-1 h-4 md:h-6 bg-blue-500/60" />
-                      )}
-                      {index % 3 === 1 && (
-                        <div className="absolute bottom-2 left-2 w-4 md:w-6 h-1 bg-purple-500/60" />
-                      )}
-                      {index % 3 === 2 && (
-                        <div className="absolute top-1/3 right-0 w-1.5 md:w-2 h-1.5 md:h-2 bg-cyan-500/60 rounded-full" />
-                      )}
-                    </div>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+            <div data-stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {services.map(({ Icon, name, desc }) => (
+                <div key={name} className="card-dark p-6 md:p-7 group">
+                  <span className="icon-tile icon-tile-dark mb-5 transition-colors">
+                    <Icon strokeWidth={1.5} className="w-5 h-5 group-hover:text-glass-accent-on-dark transition-colors" />
+                  </span>
+                  <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-glass-text-dark mb-2 group-hover:text-glass-accent-on-dark transition-colors">{name}</h3>
+                  <p className="text-[14px] leading-relaxed text-glass-text-muted">{desc}</p>
+                </div>
+              ))}
             </div>
 
-            {/* View All Services CTA - Mobile optimized */}
-            <div className="text-center mt-8 md:mt-12">
-              <a 
-                href="/services" 
-                className="inline-flex items-center gap-2 px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 text-sm md:text-base"
-              >
-                View All Services
-                <span>→</span>
-              </a>
+            <div className="reveal mt-12">
+              <Link href="/services" className="inline-flex items-center gap-2 text-[15px] font-medium text-glass-accent-on-dark hover:gap-3 transition-all">
+                Explore all services
+                <ArrowRight strokeWidth={1.75} className="w-4 h-4" />
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* Enhanced Portfolio Section - Mobile Optimized */}
-        <section className="py-16 md:py-24 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
-          {/* Background decoration - Hidden on mobile */}
-          <div className="absolute inset-0 pointer-events-none opacity-50">
-            <div className="hidden md:block absolute top-10 right-10 w-32 h-px bg-gradient-to-r from-transparent to-blue-300" />
-            <div className="hidden md:block absolute bottom-10 left-10 w-32 h-px bg-gradient-to-r from-purple-300 to-transparent" />
-          </div>
-
-          <div className="container mx-auto px-4 md:px-6 relative">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-12">
-              <div>
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-3 md:mb-4">
-                  <span className="bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
-                    Portfolio
-                  </span>
-                </h2>
-                <p className="text-base md:text-lg text-slate-600">
-                  Real results from real projects. See how we transform businesses through technology.
-                </p>
-              </div>
-              <a href="/contact" className="inline-flex md:hidden lg:inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm md:text-base">
-                Work with us
-                <span>→</span>
-              </a>
+        {/* ===================== WORK (light, alternating splits) ===================== */}
+        <section id="work" className="scroll-mt-20 bg-glass-canvas">
+          <div className="mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
+            <div className="reveal max-w-3xl mb-16">
+              <span className="t-eyebrow text-glass-accent">03 — Selected work</span>
+              <h2 className="t-h2 mt-4 text-glass-text-1">What we've built</h2>
+              <p className="mt-5 text-[18px] leading-relaxed text-glass-text-2 max-w-2xl">
+                We show the work, not vanity numbers. Every project here was built, delivered, and is
+                live with a real client.
+              </p>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {projects.map((project, index) => (
-                <a 
-                  key={project.title} 
-                  href="/contact" 
-                  className="group relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
-                  style={{ animationDelay: `${index * 150}ms` }}
-                >
-                  <div className="relative h-48 md:h-56 w-full overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
-                    {/* Placeholder gradient instead of image */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 via-purple-400/20 to-cyan-400/20" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                    
-                    {/* Project tag */}
-                    <div className="absolute top-3 md:top-4 left-3 md:left-4 px-2 md:px-3 py-1 bg-white/90 backdrop-blur rounded-full">
-                      <span className="text-xs font-semibold text-blue-600">{project.tag}</span>
+
+            <div className="space-y-16 md:space-y-24">
+              {projects.map((p, i) => {
+                const flip = i % 2 === 1;
+                return (
+                  <div key={p.title} className="reveal grid lg:grid-cols-2 gap-8 lg:gap-14 items-center">
+                    {/* Visual */}
+                    <div className={flip ? "lg:order-2" : ""}>
+                      <ProjectVisual variant={p.variant} />
                     </div>
-                  </div>
-                  
-                  <div className="p-4 md:p-6">
-                    <h3 className="text-lg md:text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
-                      {project.title}
-                    </h3>
-                    <p className="text-slate-600 mb-3 md:mb-4 leading-relaxed text-sm md:text-base">{project.desc}</p>
-                    
-                    {/* Metrics */}
-                    <div className="space-y-1.5 md:space-y-2 mb-3 md:mb-4">
-                      {project.metrics.map((metric, i) => (
-                        <div key={i} className="flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
-                          <span className="text-xs text-slate-500">{metric}</span>
+                    {/* Copy */}
+                    <div className={flip ? "lg:order-1" : ""}>
+                      <span className="t-eyebrow text-glass-text-3">{p.tag}</span>
+                      <h3 className="mt-3 t-h3 text-glass-text-1 leading-snug">{p.title}</h3>
+                      <p className="mt-4 text-[16px] leading-relaxed text-glass-text-2 max-w-xl">{p.desc}</p>
+                      {p.outcome ? (
+                        <div className="mt-6 pt-5 border-t border-glass-canvas-border flex items-start gap-2.5 max-w-xl">
+                          <Check strokeWidth={1.75} className="w-4 h-4 mt-0.5 text-glass-accent shrink-0" />
+                          <span className="text-[14px] leading-relaxed text-glass-text-2">{p.outcome}</span>
                         </div>
-                      ))}
-                    </div>
-                    
-                    <div className="flex items-center gap-2 text-blue-600 font-medium group-hover:gap-3 transition-all text-sm md:text-base">
-                      View Case Study
-                      <span>→</span>
+                      ) : (
+                        <Link href="/contact" className="mt-6 inline-flex items-center gap-1.5 text-[15px] font-medium text-glass-accent group">
+                          Start a conversation
+                          <ArrowUpRight strokeWidth={1.75} className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                        </Link>
+                      )}
                     </div>
                   </div>
-                </a>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* ===================== PROCESS (dark) ===================== */}
+        <section className="relative bg-glass-ink text-glass-text-dark">
+          <div className="absolute inset-0 bg-grid-dark opacity-50 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]" />
+          <GrainOverlay />
+          <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
+            <div className="reveal max-w-3xl mb-14">
+              <span className="t-eyebrow text-glass-accent-on-dark">04 — How it works</span>
+              <h2 className="t-h2 mt-4 text-glass-text-dark">Three steps. No mystery.</h2>
+            </div>
+            <div data-stagger className="grid sm:grid-cols-3 gap-5">
+              {steps.map(({ Icon, name, desc }, i) => (
+                <div key={name} className="card-dark p-6 md:p-7">
+                  <div className="flex items-center gap-3 mb-5">
+                    <span className="icon-tile icon-tile-dark">
+                      <Icon strokeWidth={1.5} className="w-5 h-5" />
+                    </span>
+                    <span className="text-[13px] font-bold text-glass-text-muted">0{i + 1}</span>
+                  </div>
+                  <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-glass-text-dark mb-2">{name}</h3>
+                  <p className="text-[14px] leading-relaxed text-glass-text-muted">{desc}</p>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* New CTA Section - Mobile Optimized */}
-        <section className="py-16 md:py-24 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 relative overflow-hidden">
-          <div className="absolute inset-0 bg-black/10" />
-          <div className="absolute inset-0">
-            <div className="absolute top-1/4 left-1/4 w-32 md:w-64 h-32 md:h-64 bg-white/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-1/4 right-1/4 w-40 md:w-80 h-40 md:h-80 bg-white/10 rounded-full blur-3xl" />
-          </div>
-          
-          <div className="container mx-auto px-4 md:px-6 text-center relative">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 md:mb-6">
-              Ready to build something amazing?
-            </h2>
-            <p className="text-base md:text-xl text-white/90 max-w-full md:max-w-2xl mx-auto mb-8 md:mb-12 leading-relaxed px-4">
-              Let's transform your ideas into powerful digital solutions that drive growth and exceed expectations.
-            </p>
-            
-            <div className="flex flex-col gap-3 md:gap-4 justify-center max-w-sm md:max-w-none mx-auto">
-              <a 
-                href="/contact" 
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 md:px-8 py-3 md:py-4 text-base md:text-lg font-semibold text-purple-600 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-              >
-                Start Your Project
-                <span>→</span>
-              </a>
-              <a 
-                href="/services" 
-                className="inline-flex items-center justify-center rounded-xl border-2 border-white/30 bg-white/10 px-6 md:px-8 py-3 md:py-4 text-base md:text-lg font-semibold text-white backdrop-blur hover:bg-white/20 transition-all duration-200"
-              >
-                Explore Services
-              </a>
+        {/* ===================== CLOSING CTA (light) ===================== */}
+        <section className="relative bg-glass-canvas overflow-hidden">
+          <div className="absolute inset-0 bg-dots-light opacity-40 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black,transparent_72%)]" />
+          <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
+            <div className="reveal max-w-3xl">
+              <span className="t-eyebrow text-glass-accent">Next step</span>
+              <h2 className="t-h1 mt-4 text-glass-text-1">Ready to build something real?</h2>
+              <p className="mt-6 text-[18px] leading-relaxed text-glass-text-2 max-w-xl">
+                We start with a free 30-minute discovery call. No pitch — just an honest conversation
+                about your biggest operational challenge and whether we're the right fit to solve it.
+              </p>
+              <div className="mt-9 flex flex-col sm:flex-row gap-3">
+                <a href={`mailto:${EMAIL}?subject=${encodeURIComponent("Free discovery call")}`} className="btn btn-primary group">
+                  Book a free call
+                  <ArrowRight strokeWidth={1.75} className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </a>
+                <Link href="/services" className="btn btn-secondary">See services</Link>
+              </div>
+              <p className="mt-6 text-[13px] text-glass-text-3">We respond within 24 hours · {EMAIL}</p>
+              <p className="mt-12 text-[20px] font-semibold tracking-[-0.01em] text-glass-text-1">Clarity. Precision. Innovation.</p>
+              <p className="mt-2 text-[15px] italic text-glass-text-3">— Griffins, Glass Inc</p>
             </div>
           </div>
         </section>
       </main>
+
       <Footer />
     </div>
   );
