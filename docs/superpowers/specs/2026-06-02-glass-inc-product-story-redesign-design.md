@@ -16,8 +16,9 @@ The owner (Griffins Adero, solo founder) needs the site to **attract high-value 
 - **Direction:** "Product Story" — asymmetric, product-forward hero; real-looking dashboard mockups behind a Linear-style accent glow; scroll-driven storytelling.
 - **Ambition:** Bold & distinctive (Awwwards-tier feel) — but **solo-maintainable**. No 3D / WebGL / Spline. No custom-cursor-as-blob.
 - **Scope:** All four pages (Home, Services, About, Contact) + shared Header/Footer. **Homepage is the rubric** — its hero, mockups, motion, and type scale define the language; the other pages adopt it.
-- **Copy:** Remove the homepage "honest proof strip" (3+/1/24h). **Worldwide-only positioning — no geographic references anywhere** (visible copy *and* SEO metadata).
-- **Logo:** Owner supplies the real logo file into `public/assets/`. Until then the current `GlassLogo` mark stays as placeholder so nothing breaks.
+- **Copy:** Remove the homepage "honest proof strip" (3+/1/24h). **Visible copy is worldwide-only — no geographic references in the rendered site.**
+- **SEO:** **Leave existing SEO/metadata untouched for now** (it keeps East Africa / Kenya / Gulf + remote keywords). Owner's real primary targets are **UAE, USA, East Africa**, so the geo keywords stay working quietly in the background while the visible design reads worldwide. (Deliberate split: invisible SEO targets markets, visible copy stays clean.)
+- **Logo:** No real distinct logo file exists. `favicon.jpg` is a flat JPEG of the same blue rectangle (white background, would show an ugly box on dark sections). Decision: **keep the vector `GlassLogo` "glass pane" mark** as the brand mark and refine the wordmark lockup; keep `favicon.jpg` only as the browser-tab favicon. A real logo, if ever designed, drops in via `<Brand>`.
 
 ## 3. Brand invariants (must not change)
 
@@ -97,19 +98,16 @@ Keep sticky + scroll behavior. Swap `GlassLogo` for the real logo image once sup
 ### 6.6 Footer — `components/Footer.js`
 Keep structure and copy (already on-message: "Direct. Honest. Delivered." / "Clarity. Precision. Innovation."). Swap in the real logo. Remove any geographic phrasing if present (currently none).
 
-## 7. SEO / metadata scrub (worldwide-only)
+## 7. SEO / metadata — leave as-is (this round)
 
-Geography currently lives in three places and must be made worldwide/remote:
-- `lib/site.js` → `description` (rewrite without East Africa/Gulf) and `areaServed` (→ `["Worldwide (remote)"]`).
-- `app/layout.js` → `keywords` array (remove "East Africa", "Kenya", "Gulf region"; keep service + remote keywords).
-- `components/JsonLd.js` → verify it reads `areaServed` from `site.js` (so it updates automatically); adjust if it hardcodes geography.
+**No SEO changes in this redesign.** The geographic keywords in `lib/site.js` (`description`, `areaServed`), `app/layout.js` (`keywords`), and `components/JsonLd.js` stay exactly as they are — they target the owner's real markets (UAE, USA, East Africa) and there's no benefit to removing them. The "worldwide-only" decision applies to **visible/rendered copy only**: the redesigned pages must not display East Africa / Gulf / specific-region phrasing. Invisible metadata and visible design are intentionally decoupled.
 
-## 8. Logo integration
+## 8. Logo / brand mark
 
-When the owner drops the file (e.g. `public/assets/logo.svg` / `logo.png`):
-- Add a `<Brand>` component used by Header + Footer that renders the image at the right height for each context (sm in header, md in footer), `onDark` variant if a light version is provided.
-- Replace `favicon.jpg` references in `app/layout.js` `icons` with the real mark; regenerate `favicon.ico` if a square source is provided.
-- If no file arrives before build, `<Brand>` falls back to the current `GlassLogo` so nothing breaks.
+No real distinct logo file exists, and the `favicon.jpg` is a flat white-background JPEG of the same rectangle (unusable as a header mark — white box on dark, blurry when scaled). Decision:
+- **Keep the vector `GlassLogo` "glass pane" mark** as the canonical brand mark (sharp corners, one accent — already on-brand).
+- Introduce a `<Brand>` lockup component (used by Header + Footer) that pairs the refined `GlassLogo` with the "Glass Inc" wordmark and a premium sub-label, with an `onDark` variant. This centralizes the lockup and is the single seam where a real logo image would later drop in.
+- `favicon.jpg` stays **only** as the browser-tab favicon in `app/layout.js` (the one place a flat jpg is acceptable). No other changes to favicon wiring this round.
 
 ## 9. Out of scope
 
@@ -127,14 +125,14 @@ When the owner drops the file (e.g. `public/assets/logo.svg` / `logo.png`):
 
 ## 11. Implementation phases (for the plan)
 
-1. **Foundation:** `globals.css` additions (`.t-display-xl`, `.glow-accent`, word-reveal), token/util prep, SEO scrub in `lib/site.js` + `layout.js` + `JsonLd.js`.
+1. **Foundation:** `globals.css` additions (`.t-display-xl`, `.glow-accent`, word-reveal), token/util prep. (No SEO changes — see §7.)
 2. **Core components:** `ProductFrame`, `DashboardMock`, `SystemDiagram`, `useMagnetic`, `GrainOverlay`, hero parallax, `<Brand>`.
 3. **Homepage (rubric):** rebuild `app/page.js` section by section.
 4. **Propagate:** Services, About, Contact, Header, Footer adopt the language.
 5. **Logo wiring** (when file lands) + favicon.
 6. **Verification:** run dev server, check each page light/dark rhythm, reduced-motion, mobile, and the §3 invariants / design-system §9 rubric.
 
-## 12. Open items for owner
+## 12. Open items — resolved
 
-- Logo file (filename + whether a light/onDark version exists).
-- Confirm the worldwide-only SEO rewrite is wanted (it removes local-SEO targeting for East Africa/Gulf — a real trade-off if those are actual target markets).
+- **Logo:** resolved — no real file; keep the vector `GlassLogo` mark, refine the lockup via `<Brand>` (§8).
+- **SEO:** resolved — leave metadata untouched; worldwide-only applies to visible copy only (§7). Real targets: UAE, USA, East Africa.
