@@ -75,12 +75,9 @@
 .glow-accent { position: absolute; inset: -20% -10% -10% -10%; background: radial-gradient(closest-side, rgba(37,99,235,0.22), transparent 80%); pointer-events: none; z-index: 0; }
 .glow-accent--on-dark { background: radial-gradient(closest-side, rgba(96,165,250,0.20), transparent 80%); }
 
-/* ---- Hero headline word reveal (one-time, gated on reduced-motion) ---- */
-.hero-word { display: inline-block; opacity: 0; transform: translateY(14px); animation: word-in 0.6s cubic-bezier(0.16,1,0.3,1) forwards; }
-@keyframes word-in { to { opacity: 1; transform: translateY(0); } }
-@media (prefers-reduced-motion: reduce) {
-  .hero-word { opacity: 1 !important; transform: none !important; animation: none !important; }
-}
+/* ---- Hero headline mask reveal (GSAP hides-then-reveals; visible by default so a JS hiccup never blanks the headline) ---- */
+.word-mask { display: inline-block; overflow: hidden; vertical-align: bottom; line-height: 1.04; }
+.word-inner { display: inline-block; will-change: transform; }
 
 /* ---- Accent shimmer (in-progress placeholder) ---- */
 @keyframes accent-shimmer { 0% { transform: translateX(-120%); } 100% { transform: translateX(320%); } }

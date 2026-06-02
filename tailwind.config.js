@@ -40,6 +40,14 @@ module.exports = {
           "accent-subtle": "#EFF6FF",
           "accent-on-dark": "#60A5FA",
           success: "#16A34A",
+          // Warmer palette — grey (graphite) dark sections + cream warmth
+          graphite: "#17191D",
+          "graphite-soft": "#1F2228",
+          "graphite-border": "#2A2D34",
+          cream: "#F3EEE3",
+          "cream-soft": "#FAF7F0",
+          "cream-text": "#E9E0CE",
+          "cream-muted": "#B9B2A2",
         },
       },
       borderRadius: {

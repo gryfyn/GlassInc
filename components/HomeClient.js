@@ -11,7 +11,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import ProductFrame from "./ProductFrame";
 import ProjectCover from "./ProjectCover";
-import HeroFilm from "./HeroFilm";
+import HeroBackdrop from "./HeroBackdrop";
 import GrainOverlay from "./GrainOverlay";
 import useScrollReveal from "./useScrollReveal";
 import useMagnetic from "./useMagnetic";
@@ -44,13 +44,13 @@ const projects = [
     desc: "Workflows, data tracking, and staff records matched to an SME's exact operations.",
   },
   {
-    variant: "web",
+    img: "/assets/project-highrise.jpg",
     tag: "Home care · Web platform",
     title: "Highrise Home Care",
     desc: "A multi-page platform for a home-care agency — services, facilities, admissions, and enquiries.",
   },
   {
-    variant: "software",
+    img: "/assets/project-westford.jpg",
     tag: "Homes · Web platform",
     title: "Westford Homes",
     desc: "Services, admissions, and an email-backed enquiry flow, with SEO built in.",
@@ -62,7 +62,7 @@ const projects = [
     desc: "A full company site spanning a dozen service lines — cloud, networking, security, and smart solutions.",
   },
   {
-    variant: "gallery",
+    img: "/assets/project-art.jpg",
     tag: "Creative · Portfolio",
     title: "Art By Remmy",
     desc: "An artist portfolio with a dynamic image gallery and direct email contact.",
@@ -122,20 +122,35 @@ export default function HomeClient() {
   const root = useRef(null);
   useScrollReveal(root);
   const magneticCta = useMagnetic();
-  const heroVisual = useRef(null);
+  const heroSection = useRef(null);
+  const heroContent = useRef(null);
 
-  // Hero product-frame parallax (decorative, reduced-motion safe)
+  // Hero: GSAP tagline mask-reveal on load + Mistral-style scroll-out on exit
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
     gsap.registerPlugin(ScrollTrigger);
     const ctx = gsap.context(() => {
-      if (!heroVisual.current) return;
-      gsap.to(heroVisual.current, {
-        yPercent: -10,
-        ease: "none",
-        scrollTrigger: { trigger: heroVisual.current, start: "top 80%", end: "bottom top", scrub: 1.5 },
-      });
+      gsap.fromTo(
+        ".word-inner",
+        { yPercent: 110 },
+        { yPercent: 0, duration: 0.9, ease: "power4.out", stagger: 0.08, delay: 0.15 }
+      );
+      if (heroContent.current && heroSection.current) {
+        gsap.to(heroContent.current, {
+          yPercent: -8,
+          opacity: 0,
+          filter: "blur(8px)",
+          ease: "none",
+          scrollTrigger: {
+            trigger: heroSection.current,
+            start: "top top",
+            end: "bottom 35%",
+            scrub: true,
+          },
+        });
+      }
     }, root);
     return () => ctx.revert();
   }, []);
@@ -145,69 +160,62 @@ export default function HomeClient() {
       <Header />
 
       <main className="flex-1">
-        {/* ===================== HERO (dark, asymmetric) ===================== */}
-        <section className="relative overflow-hidden bg-glass-ink text-glass-text-dark">
-          <div className="absolute inset-0 bg-grid-dark opacity-50 pointer-events-none [mask-image:linear-gradient(to_bottom,black_60%,transparent)]" />
+        {/* ===================== HERO (dark, cinematic backdrop) ===================== */}
+        <section ref={heroSection} className="relative overflow-hidden bg-glass-ink text-glass-text-dark">
+          <HeroBackdrop />
+          <div className="absolute inset-0 bg-grid-dark opacity-30 pointer-events-none [mask-image:linear-gradient(to_bottom,black_60%,transparent)]" />
           <GrainOverlay />
-          <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 pt-24 pb-20 md:pt-28 md:pb-28 lg:pt-32">
-            <div className="grid lg:grid-cols-12 gap-12 lg:gap-10 items-center">
-              {/* Left: copy */}
-              <div className="lg:col-span-6">
-                <div className="inline-flex items-center gap-2.5 mb-7">
-                  <span className="t-eyebrow text-glass-accent-on-dark">01 — Software Studio</span>
-                </div>
-                <h1 className="t-display-xl text-glass-text-dark max-w-[14ch]">
-                  {HERO_WORDS.map((w, i) => (
-                    <span key={i} className="hero-word" style={{ animationDelay: `${0.1 + i * 0.07}s` }}>
-                      {w}{i < HERO_WORDS.length - 1 ? " " : ""}
-                    </span>
-                  ))}
-                </h1>
-                <p className="mt-7 max-w-xl text-[18px] leading-[1.65] text-glass-text-muted">
-                  We partner with small and mid-size businesses to build what runs them — custom
-                  software, automation, data, design and content. Everything digital, from one team.
-                </p>
-                <div className="mt-9 flex flex-col sm:flex-row gap-3">
-                  <Link ref={magneticCta} href="/contact" className="btn btn-primary group">
-                    Start your project
-                    <ArrowRight strokeWidth={1.75} className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                  </Link>
-                  <a href="#work" className="btn btn-ghost">See our work</a>
-                </div>
-                <p className="mt-8 t-eyebrow text-glass-text-muted">Remote-first · Worldwide</p>
+          <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 pt-28 pb-24 md:pt-36 md:pb-32 lg:pt-40 lg:pb-40 min-h-[88vh] flex items-center">
+            <div ref={heroContent} className="max-w-2xl">
+              <div className="inline-flex items-center gap-2.5 mb-7">
+                <span className="t-eyebrow text-glass-accent-on-dark">01 — Software Studio</span>
               </div>
-
-              {/* Right: product frame */}
-              <div className="lg:col-span-6">
-                <div ref={heroVisual} className="relative lg:pl-6">
-                  <ProductFrame tone="dark" glow label="showreel">
-                    <HeroFilm />
-                  </ProductFrame>
-                </div>
+              <h1 className="t-display-xl text-glass-cream-text max-w-[14ch]">
+                {HERO_WORDS.map((w, i) => (
+                  <span
+                    key={i}
+                    className="word-mask"
+                    style={{ marginRight: i < HERO_WORDS.length - 1 ? "0.26em" : 0 }}
+                  >
+                    <span className="word-inner">{w}</span>
+                  </span>
+                ))}
+              </h1>
+              <p className="mt-7 max-w-xl text-[18px] leading-[1.65] text-glass-text-muted">
+                We partner with small and mid-size businesses to build what runs them — custom
+                software, automation, data, design and content. Everything digital, from one team.
+              </p>
+              <div className="mt-9 flex flex-col sm:flex-row gap-3">
+                <Link ref={magneticCta} href="/contact" className="btn btn-primary group">
+                  Start your project
+                  <ArrowRight strokeWidth={1.75} className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+                <a href="#work" className="btn btn-ghost">See our work</a>
               </div>
+              <p className="mt-8 t-eyebrow text-glass-text-muted">Remote-first · Worldwide</p>
             </div>
           </div>
         </section>
 
-        {/* ===================== POSITIONING (light) ===================== */}
-        <section className="relative bg-glass-canvas">
-          <div className="absolute inset-0 bg-dots-light opacity-40 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
+        {/* ===================== POSITIONING (cream) ===================== */}
+        <section className="relative bg-glass-cream">
+          <div className="absolute inset-0 bg-dots-light opacity-25 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
           <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-20 md:py-24">
-            <p className="reveal t-h2 text-glass-text-1 max-w-[20ch]">
+            <p className="reveal t-h2 text-glass-ink max-w-[20ch]">
               One team for everything digital.
-              <span className="text-glass-text-3"> No agencies to coordinate, no handoffs.</span>
+              <span className="text-glass-text-2"> No agencies to coordinate, no handoffs.</span>
             </p>
           </div>
         </section>
 
-        {/* ===================== SERVICES (dark) ===================== */}
-        <section className="relative bg-glass-ink text-glass-text-dark">
-          <div className="absolute inset-0 bg-grid-dark opacity-60 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]" />
+        {/* ===================== SERVICES (graphite) ===================== */}
+        <section className="relative bg-glass-graphite text-glass-text-dark">
+          <div className="absolute inset-0 bg-grid-dark opacity-50 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]" />
           <GrainOverlay />
           <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
             <div className="reveal max-w-3xl mb-14">
               <span className="t-eyebrow text-glass-accent-on-dark">02 — What we do</span>
-              <h2 className="t-h2 mt-4 text-glass-text-dark">Everything your business needs to go digital</h2>
+              <h2 className="t-h2 mt-4 text-glass-cream-text">Everything your business needs to go digital</h2>
               <p className="mt-5 text-[18px] leading-relaxed text-glass-text-muted max-w-2xl">
                 One team handles your software, automation, data, brand, and content — no handoffs,
                 no agencies to coordinate, always one person to call.
@@ -255,14 +263,14 @@ export default function HomeClient() {
           </div>
         </section>
 
-        {/* ===================== PROCESS (dark) ===================== */}
-        <section className="relative bg-glass-ink text-glass-text-dark">
-          <div className="absolute inset-0 bg-grid-dark opacity-50 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]" />
+        {/* ===================== PROCESS (graphite) ===================== */}
+        <section className="relative bg-glass-graphite text-glass-text-dark">
+          <div className="absolute inset-0 bg-grid-dark opacity-40 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]" />
           <GrainOverlay />
           <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
             <div className="reveal max-w-3xl mb-14">
               <span className="t-eyebrow text-glass-accent-on-dark">04 — How it works</span>
-              <h2 className="t-h2 mt-4 text-glass-text-dark">Three steps. No mystery.</h2>
+              <h2 className="t-h2 mt-4 text-glass-cream-text">Three steps. No mystery.</h2>
             </div>
             <div data-stagger className="grid sm:grid-cols-3 gap-5">
               {steps.map(({ Icon, name, desc }, i) => (
