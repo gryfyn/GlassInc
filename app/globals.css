@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
+/* Inter is loaded via next/font (app/layout.js) — no render-blocking @import. */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -52,7 +52,80 @@
 @layer base {
   * { @apply border-border; }
   html, body { height: 100%; }
-  body { @apply bg-background text-foreground antialiased; font-family: Inter, ui-sans-serif, system-ui; }
+  body { @apply bg-background text-foreground antialiased; font-family: var(--font-inter), Inter, ui-sans-serif, system-ui; font-feature-settings: "ss01", "cv01", "cv11"; }
+}
+
+/* ===========================================================================
+   Glass Inc — premium design system primitives  (docs/design-system.md)
+   One accent (#2563EB). Inter only. Restraint, hierarchy, negative space.
+=========================================================================== */
+
+/* ---- Typography utilities (Apple-grade Inter) ---- */
+.t-display { font-size: clamp(56px, 7vw, 80px); font-weight: 800; line-height: 1.0; letter-spacing: -0.04em; }
+.t-h1 { font-size: clamp(40px, 5vw, 56px); font-weight: 800; line-height: 1.05; letter-spacing: -0.035em; }
+.t-h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 700; line-height: 1.1; letter-spacing: -0.025em; }
+.t-h3 { font-size: clamp(20px, 2.5vw, 28px); font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
+.t-eyebrow { font-size: 11px; font-weight: 600; line-height: 1.4; letter-spacing: 0.1em; text-transform: uppercase; }
+.t-label { font-size: 12px; font-weight: 500; line-height: 1.5; letter-spacing: 0.04em; }
+
+/* ---- Hero display-XL (homepage hero only) ---- */
+.t-display-xl { font-size: clamp(48px, 9vw, 132px); font-weight: 800; line-height: 0.95; letter-spacing: -0.045em; }
+
+/* ---- Accent-only radial glow (behind product frames) ---- */
+.glow-accent { position: absolute; inset: -20% -10% -10% -10%; background: radial-gradient(closest-side, rgba(37,99,235,0.22), transparent 80%); pointer-events: none; z-index: 0; }
+.glow-accent--on-dark { background: radial-gradient(closest-side, rgba(96,165,250,0.20), transparent 80%); }
+
+/* ---- Hero headline word reveal (one-time, gated on reduced-motion) ---- */
+.hero-word { display: inline-block; opacity: 0; transform: translateY(14px); animation: word-in 0.6s cubic-bezier(0.16,1,0.3,1) forwards; }
+@keyframes word-in { to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .hero-word { opacity: 1 !important; transform: none !important; animation: none !important; }
+}
+
+/* ---- Accent shimmer (in-progress placeholder) ---- */
+@keyframes accent-shimmer { 0% { transform: translateX(-120%); } 100% { transform: translateX(320%); } }
+.accent-shimmer { animation: accent-shimmer 2.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .accent-shimmer { animation: none !important; } }
+
+/* ---- Buttons ---- */
+.btn { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 15px; font-weight: 600; border-radius: 6px; padding: 0.75rem 1.5rem; transition: background-color .15s ease, border-color .15s ease, color .15s ease; }
+.btn-primary { background: #2563EB; color: #fff; box-shadow: 0 1px 3px rgba(37,99,235,.25), 0 1px 2px rgba(37,99,235,.15); }
+.btn-primary:hover { background: #1D4ED8; }
+.btn-secondary { background: transparent; color: #0A0A0B; border: 1px solid #E4E4E8; }
+.btn-secondary:hover { border-color: #0A0A0B; }
+.btn-ghost { background: transparent; color: #F0F0F4; border: 1px solid #2E2E38; }
+.btn-ghost:hover { border-color: #5C5C66; }
+.btn-on-dark { background: #fff; color: #0A0A0B; }
+.btn-on-dark:hover { background: #E4E4E8; }
+
+/* ---- Cards (shadow-deepening, never scale) ---- */
+.card-light { background: #fff; border: 1px solid #E4E4E8; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 1px 2px rgba(0,0,0,.03); transition: box-shadow .2s ease, border-color .2s ease; }
+.card-light:hover { box-shadow: 0 8px 24px rgba(0,0,0,.07), 0 2px 6px rgba(0,0,0,.04); }
+.card-dark { background: #111113; border: 1px solid #1E1E22; border-radius: 8px; transition: border-color .2s ease; }
+.card-dark:hover { border-color: #2E2E38; }
+
+/* ---- Icon tiles (lucide goes inside, strokeWidth 1.5) ---- */
+.icon-tile { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 4px; }
+.icon-tile-light { background: #F8F8FA; border: 1px solid #E4E4E8; color: #0A0A0B; }
+.icon-tile-dark { background: #161618; border: 1px solid #1E1E22; color: #60A5FA; }
+
+/* ---- Background textures ---- */
+.bg-grid-dark {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.bg-dots-light {
+  background-image: radial-gradient(circle, #D4D4D8 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 1;
+}
+
+/* ---- Reveal: start hidden so there's no flash before GSAP runs ---- */
+.reveal, [data-stagger] > * { will-change: transform, opacity; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal, [data-stagger] > * { opacity: 1 !important; transform: none !important; }
 }
 
 .text-type {
@@ -68,4 +141,44 @@
 
 .text-type__cursor--hidden {
   display: none;
+}
+
+/* ---------------- ProjectCover blueprint plates ---------------- */
+.bp-root {
+  position: relative;
+  width: 100%;
+  background-color: var(--paper-2, #ece6d7);
+  color: var(--ink, #181613);
+  overflow: hidden;
+}
+.bp-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* slow blink for active markers / draft caret */
+@keyframes bp-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+.bp-blink {
+  animation: bp-blink 1.6s steps(2, jump-none) infinite;
+}
+
+/* data packet travelling along the ops pipeline */
+@keyframes bp-travel {
+  0%   { transform: translateX(0); opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { transform: translateX(150px); opacity: 0; }
+}
+.bp-travel {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bp-travel 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bp-blink, .bp-travel { animation: none !important; }
 }
