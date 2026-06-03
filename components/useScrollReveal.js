@@ -4,15 +4,27 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 /**
- * Auxia-grade scroll reveals. The premium feel comes from LONG settles
- * (duration 1–1.2s) on `power4.out` plus a blur-lift — not quick fades.
+ * Auxia/Mistral-grade scroll reveals with DIRECTIONAL VARIETY.
+ * Long settles (1–1.2s) on power4.out / back.out — not all "rise up".
  *
- *  - `.reveal`              → single element: rise 32px + blur(6px) → settle
- *  - `[data-stagger] > *`   → children settle in sequence (stagger 0.12)
- *  - `[data-lines]`         → line-mask reveal: each `.line-inner` rises from
- *                             behind its `.line-mask` (yPercent 110 → 0)
- * Honors prefers-reduced-motion (content stays visible, no motion).
+ * Pick a variant per element with `data-reveal`:
+ *   up | down | left | right | scale (grow + overshoot) | pop (shrink in) | blur
+ * Apply to:
+ *   .reveal              → single element (default: blur)
+ *   [data-stagger]       → children in sequence (default: up); honors data-reveal
+ *   [data-lines]         → line-mask reveal (.line-inner rises out of .line-mask)
+ * Honors prefers-reduced-motion.
  */
+const V = {
+  up:    { from: { y: 44, autoAlpha: 0 },                                   dur: 1.0,  ease: "power4.out" },
+  down:  { from: { y: -44, autoAlpha: 0 },                                  dur: 1.0,  ease: "power4.out" },
+  left:  { from: { x: -90, autoAlpha: 0 },                                  dur: 1.1,  ease: "power4.out" },
+  right: { from: { x: 90, autoAlpha: 0 },                                   dur: 1.1,  ease: "power4.out" },
+  scale: { from: { scale: 0.55, autoAlpha: 0, transformOrigin: "50% 50%" }, dur: 1.05, ease: "back.out(1.7)" },
+  pop:   { from: { scale: 1.2, autoAlpha: 0, transformOrigin: "50% 50%" },  dur: 0.9,  ease: "power3.out" },
+  blur:  { from: { y: 32, autoAlpha: 0, filter: "blur(8px)" },              dur: 1.0,  ease: "power4.out" },
+};
+
 export default function useScrollReveal(rootRef) {
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -34,25 +46,23 @@ export default function useScrollReveal(rootRef) {
       });
 
       gsap.utils.toArray(".reveal").forEach((el) => {
+        const v = V[el.dataset.reveal] || V.blur;
         gsap.from(el, {
-          y: 32,
-          autoAlpha: 0,
-          filter: "blur(6px)",
-          duration: 1,
-          ease: "power4.out",
-          scrollTrigger: { trigger: el, start: "top 85%", once: true },
+          ...v.from,
+          duration: v.dur,
+          ease: v.ease,
+          scrollTrigger: { trigger: el, start: "top 86%", once: true },
         });
       });
 
       gsap.utils.toArray("[data-stagger]").forEach((group) => {
+        const v = V[group.dataset.reveal] || V.up;
         gsap.from(group.children, {
-          y: 32,
-          autoAlpha: 0,
-          filter: "blur(6px)",
-          duration: 1,
-          ease: "power4.out",
-          stagger: 0.12,
-          scrollTrigger: { trigger: group, start: "top 82%", once: true },
+          ...v.from,
+          duration: v.dur,
+          ease: v.ease,
+          stagger: 0.1,
+          scrollTrigger: { trigger: group, start: "top 84%", once: true },
         });
       });
 

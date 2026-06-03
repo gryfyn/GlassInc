@@ -181,7 +181,7 @@ export default function Contact() {
               <h2 className="t-h2 mt-4 text-glass-text-dark">Pick whatever's least friction.</h2>
             </div>
 
-            <div data-stagger className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div data-stagger data-reveal="scale" className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {contactMethods.map(({ Icon, label, value, note, href, cta }) => (
                 <a key={label} href={href} className="card-dark p-6 md:p-8 group flex flex-col gap-5">
                   <span className="icon-tile icon-tile-dark transition-colors">

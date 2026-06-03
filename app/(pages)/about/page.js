@@ -169,7 +169,7 @@ export default function About() {
               <h2 className="t-h2 mt-4 text-glass-text-dark">Three principles, kept.</h2>
             </div>
 
-            <div data-stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div data-stagger data-reveal="scale" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {principles.map(({ Icon, name, desc }) => (
                 <div key={name} className="card-dark p-6 md:p-7 group">
                   <span className="icon-tile icon-tile-dark mb-5 transition-colors">
@@ -195,7 +195,7 @@ export default function About() {
               </p>
             </div>
 
-            <div data-stagger className="grid sm:grid-cols-3 gap-5 max-w-3xl">
+            <div data-stagger data-reveal="pop" className="grid sm:grid-cols-3 gap-5 max-w-3xl">
               {proofItems.map(({ Icon, label }) => (
                 <div key={label} className="card-light p-6 md:p-7 group">
                   <span className="icon-tile icon-tile-light mb-5">

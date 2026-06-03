@@ -122,7 +122,7 @@ export default function ServicesPage() {
               <h2 className="t-h2 mt-4 text-glass-text-dark">What we do, end to end</h2>
             </div>
 
-            <div data-stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div data-stagger data-reveal="scale" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {services.map(({ Icon, name, desc, pills }) => (
                 <div key={name} className="card-dark p-6 md:p-7 flex flex-col group">
                   <span className="icon-tile icon-tile-dark mb-5 transition-colors">

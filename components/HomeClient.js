@@ -186,7 +186,7 @@ export default function HomeClient() {
         <section className="relative bg-glass-cream">
           <div className="absolute inset-0 bg-dots-light opacity-25 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
           <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-20 md:py-24">
-            <p className="reveal t-h2 text-glass-ink max-w-[20ch]">
+            <p data-reveal="left" className="reveal t-h2 text-glass-ink max-w-[20ch]">
               One team for everything digital.
               <span className="text-glass-text-2"> No agencies to coordinate, no handoffs.</span>
             </p>
@@ -207,7 +207,7 @@ export default function HomeClient() {
               </p>
             </div>
 
-            <div data-stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div data-stagger data-reveal="scale" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {services.map(({ Icon, name, desc }) => (
                 <div key={name} className="card-dark p-6 md:p-7 group">
                   <span className="icon-tile icon-tile-dark mb-5 transition-colors">
@@ -231,7 +231,7 @@ export default function HomeClient() {
         {/* ===================== WORK (light, alternating splits) ===================== */}
         <section id="work" className="scroll-mt-20 bg-glass-canvas">
           <div className="mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
-            <div className="reveal max-w-3xl mb-16">
+            <div data-reveal="right" className="reveal max-w-3xl mb-16">
               <span className="t-eyebrow text-glass-accent">03 — Selected work</span>
               <h2 className="t-h2 mt-4 text-glass-text-1">What we've built</h2>
               <p className="mt-5 text-[18px] leading-relaxed text-glass-text-2 max-w-2xl">
@@ -240,7 +240,7 @@ export default function HomeClient() {
               </p>
             </div>
 
-            <div data-stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div data-stagger data-reveal="pop" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((p) => (
                 <ProjectCard key={p.title} p={p} />
               ))}
