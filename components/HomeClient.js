@@ -12,6 +12,7 @@ import Footer from "./Footer";
 import ProductFrame from "./ProductFrame";
 import ProjectCover from "./ProjectCover";
 import HeroBackdrop from "./HeroBackdrop";
+import ProcessScroller from "./ProcessScroller";
 import GrainOverlay from "./GrainOverlay";
 import useScrollReveal from "./useScrollReveal";
 import useMagnetic from "./useMagnetic";
@@ -122,38 +123,6 @@ export default function HomeClient() {
   const root = useRef(null);
   useScrollReveal(root);
   const magneticCta = useMagnetic();
-  const heroSection = useRef(null);
-  const heroContent = useRef(null);
-
-  // Hero: GSAP tagline mask-reveal on load + Mistral-style scroll-out on exit
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return;
-    gsap.registerPlugin(ScrollTrigger);
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".word-inner",
-        { yPercent: 110 },
-        { yPercent: 0, duration: 0.9, ease: "power4.out", stagger: 0.08, delay: 0.15 }
-      );
-      if (heroContent.current && heroSection.current) {
-        gsap.to(heroContent.current, {
-          yPercent: -8,
-          opacity: 0,
-          filter: "blur(8px)",
-          ease: "none",
-          scrollTrigger: {
-            trigger: heroSection.current,
-            start: "top top",
-            end: "bottom 35%",
-            scrub: true,
-          },
-        });
-      }
-    }, root);
-    return () => ctx.revert();
-  }, []);
 
   return (
     <div ref={root} className="min-h-screen flex flex-col bg-glass-canvas text-glass-text-1">
@@ -161,38 +130,30 @@ export default function HomeClient() {
 
       <main className="flex-1">
         {/* ===================== HERO (dark, cinematic backdrop) ===================== */}
-        <section ref={heroSection} className="relative overflow-hidden bg-glass-ink text-glass-text-dark">
+        <section className="relative overflow-hidden bg-glass-ink text-glass-text-dark">
           <HeroBackdrop />
           <div className="absolute inset-0 bg-grid-dark opacity-30 pointer-events-none [mask-image:linear-gradient(to_bottom,black_60%,transparent)]" />
           <GrainOverlay />
           <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 pt-28 pb-24 md:pt-36 md:pb-32 lg:pt-40 lg:pb-40 min-h-[88vh] flex items-center">
-            <div ref={heroContent} className="max-w-2xl">
-              <div className="inline-flex items-center gap-2.5 mb-7">
+            <div className="max-w-2xl">
+              <div className="anim-from-top inline-flex items-center gap-2.5 mb-7">
                 <span className="t-eyebrow text-glass-accent-on-dark">01 — Software Studio</span>
               </div>
-              <h1 className="t-display-xl text-glass-cream-text max-w-[14ch]">
-                {HERO_WORDS.map((w, i) => (
-                  <span
-                    key={i}
-                    className="word-mask"
-                    style={{ marginRight: i < HERO_WORDS.length - 1 ? "0.26em" : 0 }}
-                  >
-                    <span className="word-inner">{w}</span>
-                  </span>
-                ))}
+              <h1 className="anim-reveal t-display-xl text-glass-cream-text max-w-[14ch]" style={{ animationDelay: "0.08s" }}>
+                We build software that runs your business.
               </h1>
-              <p className="mt-7 max-w-xl text-[18px] leading-[1.65] text-glass-text-muted">
+              <p className="anim-reveal mt-7 max-w-xl text-[18px] leading-[1.65] text-glass-text-muted" style={{ animationDelay: "0.3s" }}>
                 We partner with small and mid-size businesses to build what runs them — custom
                 software, automation, data, design and content. Everything digital, from one team.
               </p>
-              <div className="mt-9 flex flex-col sm:flex-row gap-3">
+              <div className="anim-from-top mt-9 flex flex-col sm:flex-row gap-3" style={{ animationDelay: "0.46s" }}>
                 <Link ref={magneticCta} href="/contact" className="btn btn-primary group">
                   Start your project
                   <ArrowRight strokeWidth={1.75} className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
                 <a href="#work" className="btn btn-ghost">See our work</a>
               </div>
-              <p className="mt-8 t-eyebrow text-glass-text-muted">Remote-first · Worldwide</p>
+              <p className="anim-from-top mt-8 t-eyebrow text-glass-text-muted" style={{ animationDelay: "0.56s" }}>Remote-first · Worldwide</p>
             </div>
           </div>
         </section>
@@ -263,31 +224,8 @@ export default function HomeClient() {
           </div>
         </section>
 
-        {/* ===================== PROCESS (graphite) ===================== */}
-        <section className="relative bg-glass-graphite text-glass-text-dark">
-          <div className="absolute inset-0 bg-grid-dark opacity-40 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]" />
-          <GrainOverlay />
-          <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
-            <div className="reveal max-w-3xl mb-14">
-              <span className="t-eyebrow text-glass-accent-on-dark">04 — How it works</span>
-              <h2 className="t-h2 mt-4 text-glass-cream-text">Three steps. No mystery.</h2>
-            </div>
-            <div data-stagger className="grid sm:grid-cols-3 gap-5">
-              {steps.map(({ Icon, name, desc }, i) => (
-                <div key={name} className="card-dark p-6 md:p-7">
-                  <div className="flex items-center gap-3 mb-5">
-                    <span className="icon-tile icon-tile-dark">
-                      <Icon strokeWidth={1.5} className="w-5 h-5" />
-                    </span>
-                    <span className="text-[13px] font-bold text-glass-text-muted">0{i + 1}</span>
-                  </div>
-                  <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-glass-text-dark mb-2">{name}</h3>
-                  <p className="text-[14px] leading-relaxed text-glass-text-muted">{desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* ===================== PROCESS (Auxia-style pinned scroller) ===================== */}
+        <ProcessScroller />
 
         {/* ===================== CLOSING CTA (light) ===================== */}
         <section className="relative bg-glass-canvas overflow-hidden">

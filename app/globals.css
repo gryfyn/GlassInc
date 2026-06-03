@@ -75,9 +75,16 @@
 .glow-accent { position: absolute; inset: -20% -10% -10% -10%; background: radial-gradient(closest-side, rgba(37,99,235,0.22), transparent 80%); pointer-events: none; z-index: 0; }
 .glow-accent--on-dark { background: radial-gradient(closest-side, rgba(96,165,250,0.20), transparent 80%); }
 
-/* ---- Hero headline mask reveal (GSAP hides-then-reveals; visible by default so a JS hiccup never blanks the headline) ---- */
-.word-mask { display: inline-block; overflow: hidden; vertical-align: bottom; line-height: 1.04; }
-.word-inner { display: inline-block; will-change: transform; }
+/* ---- Landing entrance (Mistral-style): clip-path wipe + directional fades ---- */
+@keyframes reveal-up { 0% { clip-path: polygon(0 0,0 0,0 0,0 0); transform: translateY(20px); } to { clip-path: polygon(0 0,100% 0,100% 100%,0 100%); transform: translateY(0); } }
+@keyframes from-top { 0% { opacity: 0; transform: translateY(-24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes from-up { 0% { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+.anim-reveal { animation: reveal-up 1s cubic-bezier(.51,-.01,.49,1) both; }
+.anim-from-top { animation: from-top .7s ease-out both; }
+.anim-up { animation: from-up .7s cubic-bezier(.16,1,.3,1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .anim-reveal, .anim-from-top, .anim-up { animation: none !important; clip-path: none !important; opacity: 1 !important; transform: none !important; }
+}
 
 /* ---- Accent shimmer (in-progress placeholder) ---- */
 @keyframes accent-shimmer { 0% { transform: translateX(-120%); } 100% { transform: translateX(320%); } }
