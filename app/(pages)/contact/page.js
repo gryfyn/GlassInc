@@ -169,7 +169,7 @@ export default function Contact() {
         </section>
 
         {/* ===================== SECTION 2 — WAYS TO REACH (dark) ===================== */}
-        <section className="relative bg-glass-ink text-glass-text-dark">
+        <section className="relative bg-glass-graphite text-glass-text-dark">
           <div
             aria-hidden
             className="absolute inset-0 bg-grid-dark opacity-60 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]"
@@ -353,7 +353,7 @@ export default function Contact() {
         </section>
 
         {/* ===================== SECTION 4 — CLOSING (dark) ===================== */}
-        <section className="bg-glass-ink text-glass-text-dark">
+        <section className="bg-glass-graphite text-glass-text-dark">
           <div className="mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
             <div className="reveal max-w-3xl">
               <h2 className="t-h1 text-glass-text-dark">Clarity. Precision. Innovation.</h2>

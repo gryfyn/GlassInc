@@ -117,9 +117,9 @@
 
 /* ---- Cards (shadow-deepening, never scale) ---- */
 .card-light { background: #fff; border: 1px solid #E4E4E8; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 1px 2px rgba(0,0,0,.03); transition: box-shadow .2s ease, border-color .2s ease; }
-.card-light:hover { box-shadow: 0 8px 24px rgba(0,0,0,.07), 0 2px 6px rgba(0,0,0,.04); }
-.card-dark { background: #111113; border: 1px solid #1E1E22; border-radius: 8px; transition: border-color .2s ease; }
-.card-dark:hover { border-color: #2E2E38; }
+.card-light:hover { box-shadow: 0 10px 30px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.04); border-color: rgba(37,99,235,.28); }
+.card-dark { background: #111113; border: 1px solid #1E1E22; border-radius: 8px; transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease; }
+.card-dark:hover { border-color: rgba(96,165,250,.38); box-shadow: 0 0 0 1px rgba(96,165,250,.08), 0 20px 44px -24px rgba(0,0,0,.7); }
 
 /* ---- Icon tiles (lucide goes inside, strokeWidth 1.5) ---- */
 .icon-tile { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 4px; }

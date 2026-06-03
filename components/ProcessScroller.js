@@ -89,6 +89,7 @@ export default function ProcessScroller() {
     <section ref={section} className="relative bg-glass-graphite text-glass-text-dark h-[280vh]">
       <div className="sticky top-0 h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0 bg-grid-dark opacity-30 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]" />
+        <div aria-hidden className="absolute top-1/2 right-[8%] -translate-y-1/2 w-[620px] h-[620px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(96,165,250,0.10), transparent 60%)" }} />
         <GrainOverlay />
         <div className="relative mx-auto max-w-6xl w-full px-6 md:px-8 lg:px-12 grid lg:grid-cols-2 gap-14 items-center">
           <div>

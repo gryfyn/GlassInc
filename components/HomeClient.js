@@ -194,8 +194,9 @@ export default function HomeClient() {
         </section>
 
         {/* ===================== SERVICES (graphite) ===================== */}
-        <section className="relative bg-glass-graphite text-glass-text-dark">
+        <section className="relative overflow-hidden bg-glass-graphite text-glass-text-dark">
           <div className="absolute inset-0 bg-grid-dark opacity-50 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]" />
+          <div aria-hidden className="absolute -top-32 right-[-5%] w-[640px] h-[640px] rounded-full pointer-events-none" style={{ background: "radial-gradient(circle, rgba(96,165,250,0.10), transparent 62%)" }} />
           <GrainOverlay />
           <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
             <div className="reveal max-w-3xl mb-14">
