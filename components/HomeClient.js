@@ -251,28 +251,33 @@ export default function HomeClient() {
         {/* ===================== PROCESS (Auxia-style pinned scroller) ===================== */}
         <ProcessScroller />
 
-        {/* ===================== CLOSING CTA (light) ===================== */}
-        <section className="relative bg-glass-canvas overflow-hidden">
-          <div className="absolute inset-0 bg-dots-light opacity-40 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black,transparent_72%)]" />
-          <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
-            <div className="reveal max-w-3xl">
-              <span className="t-eyebrow text-glass-accent">Next step</span>
-              <h2 className="t-h1 mt-4 text-glass-text-1">Ready to build something real?</h2>
-              <p className="mt-6 text-[18px] leading-relaxed text-glass-text-2 max-w-xl">
-                We start with a free 30-minute discovery call. No pitch — just an honest conversation
-                about your biggest operational challenge and whether we're the right fit to solve it.
-              </p>
-              <div className="mt-9 flex flex-col sm:flex-row gap-3">
-                <a href={`mailto:${EMAIL}?subject=${encodeURIComponent("Free discovery call")}`} className="btn btn-primary group">
-                  Book a free call
-                  <ArrowRight strokeWidth={1.75} className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                </a>
-                <Link href="/services" className="btn btn-secondary">See services</Link>
-              </div>
-              <p className="mt-6 text-[13px] text-glass-text-3">We respond within 24 hours · {EMAIL}</p>
-              <p className="mt-12 text-[20px] font-semibold tracking-[-0.01em] text-glass-text-1">Clarity. Precision. Innovation.</p>
-              <p className="mt-2 text-[15px] italic text-glass-text-3">— Griffins, Glass Inc</p>
+        {/* ===================== CLOSING CTA (cream, centered) ===================== */}
+        <section className="relative bg-glass-cream overflow-hidden">
+          <div className="absolute inset-0 bg-dots-light opacity-25 pointer-events-none [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
+          <div
+            aria-hidden
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[680px] rounded-full pointer-events-none"
+            style={{ background: "radial-gradient(circle, rgba(37,99,235,0.10), transparent 65%)" }}
+          />
+          <div className="relative mx-auto max-w-3xl text-center px-6 md:px-8 lg:px-12 py-28 md:py-40">
+            <span className="reveal t-eyebrow text-glass-accent">Next step</span>
+            <h2 data-reveal="scale" className="reveal t-display text-glass-ink mt-5 mx-auto max-w-[16ch]">
+              Ready to build something real?
+            </h2>
+            <p className="reveal mx-auto mt-7 text-[18px] leading-relaxed text-glass-text-2 max-w-xl">
+              We start with a free 30-minute discovery call. No pitch — just an honest conversation
+              about your biggest operational challenge and whether we're the right fit to solve it.
+            </p>
+            <div className="reveal mt-10 flex flex-col sm:flex-row gap-3 justify-center">
+              <a href={`mailto:${EMAIL}?subject=${encodeURIComponent("Free discovery call")}`} className="btn btn-primary group">
+                Book a free call
+                <ArrowRight strokeWidth={1.75} className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </a>
+              <Link href="/services" className="btn btn-secondary">See services</Link>
             </div>
+            <p className="reveal mt-6 text-[13px] text-glass-text-3">We respond within 24 hours · {EMAIL}</p>
+            <p className="reveal mt-14 text-[22px] font-semibold tracking-[-0.01em] text-glass-ink">Clarity. Precision. Innovation.</p>
+            <p className="reveal mt-2 text-[15px] italic text-glass-text-3">— Griffins, Glass Inc</p>
           </div>
         </section>
       </main>

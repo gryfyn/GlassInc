@@ -9,3 +9,10 @@
 .playwright-mcp/
 before-home.png
 heroflim-*.png
+
+# screenshot tooling (local visual QA)
+_shots.mjs
+_scroll.mjs
+/shots
+mistrial.html
+auxia.html

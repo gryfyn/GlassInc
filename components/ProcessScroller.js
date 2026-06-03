@@ -1,8 +1,8 @@
 "use client";
 // Auxia-style "how it works": a pinned two-column scroller. As you scroll the
-// section, the active step advances and the right-hand visual cross-fades.
-// Desktop only (CSS sticky + GSAP ScrollTrigger driving an index); mobile and
-// reduced-motion fall back to a simple stacked layout.
+// section, the active step advances and the right-hand visual cross-fades with
+// a blur lift. Only renders the tall pinned layout when it can actually animate
+// (desktop + motion); otherwise a clean stacked layout — no empty runway.
 import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -30,13 +30,17 @@ export default function ProcessScroller() {
   const section = useRef(null);
   const fill = useRef(null);
   const [active, setActive] = useState(0);
+  const [enhanced, setEnhanced] = useState(false);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const enhance =
+    const ok =
       window.matchMedia("(min-width: 1024px)").matches &&
       !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!enhance || !section.current) return;
+    if (ok) setEnhanced(true);
+  }, []);
+
+  useEffect(() => {
+    if (!enhanced || !section.current) return;
     gsap.registerPlugin(ScrollTrigger);
     const st = ScrollTrigger.create({
       trigger: section.current,
@@ -45,21 +49,48 @@ export default function ProcessScroller() {
       scrub: true,
       onUpdate: (self) => {
         const p = self.progress;
-        setActive(Math.min(STEPS.length - 1, Math.floor(p * STEPS.length)));
+        setActive(Math.min(STEPS.length - 1, Math.floor(p * STEPS.length * 0.999)));
         if (fill.current) fill.current.style.transform = `scaleY(${p})`;
       },
     });
+    ScrollTrigger.refresh();
     return () => st.kill();
-  }, []);
+  }, [enhanced]);
 
+  /* ---------- Stacked fallback (mobile / reduced-motion / pre-hydration) ---------- */
+  if (!enhanced) {
+    return (
+      <section className="relative bg-glass-graphite text-glass-text-dark">
+        <div className="absolute inset-0 bg-grid-dark opacity-30 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]" />
+        <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 py-24 md:py-32">
+          <span className="t-eyebrow text-glass-accent-on-dark">04 — How it works</span>
+          <h2 className="t-h2 mt-4 mb-12 text-glass-cream-text">Three steps. No mystery.</h2>
+          <div data-stagger className="grid md:grid-cols-3 gap-8">
+            {STEPS.map((s, i) => (
+              <div key={s.name}>
+                <div className="relative aspect-[16/10] mb-5">
+                  <Visual cover={s.cover} label={`0${i + 1} · ${s.name}`} />
+                </div>
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="icon-tile icon-tile-dark"><s.Icon strokeWidth={1.5} className="w-5 h-5" /></span>
+                  <h3 className="text-[18px] font-semibold text-glass-cream-text">{s.name}</h3>
+                </div>
+                <p className="text-[14px] leading-relaxed text-glass-text-muted">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  /* ---------- Enhanced desktop: pinned scroller ---------- */
   return (
-    <section ref={section} className="relative bg-glass-graphite text-glass-text-dark lg:h-[300vh]">
-      {/* ---------- DESKTOP: pinned scroller ---------- */}
-      <div className="hidden lg:flex sticky top-0 h-screen items-center overflow-hidden">
+    <section ref={section} className="relative bg-glass-graphite text-glass-text-dark h-[280vh]">
+      <div className="sticky top-0 h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0 bg-grid-dark opacity-30 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]" />
         <GrainOverlay />
         <div className="relative mx-auto max-w-6xl w-full px-6 md:px-8 lg:px-12 grid lg:grid-cols-2 gap-14 items-center">
-          {/* left: steps */}
           <div>
             <span className="t-eyebrow text-glass-accent-on-dark">04 — How it works</span>
             <h2 className="t-h2 mt-4 mb-10 text-glass-cream-text">Three steps. No mystery.</h2>
@@ -88,7 +119,6 @@ export default function ProcessScroller() {
               </ul>
             </div>
           </div>
-          {/* right: cross-fading visual */}
           <div className="relative aspect-[16/10]">
             {STEPS.map((s, i) => (
               <div
@@ -102,29 +132,6 @@ export default function ProcessScroller() {
                 }}
               >
                 <Visual cover={s.cover} label={s.name} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ---------- MOBILE / reduced-motion: stacked ---------- */}
-      <div className="lg:hidden relative mx-auto max-w-6xl px-6 py-24">
-        <div className="absolute inset-0 bg-grid-dark opacity-30 pointer-events-none [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]" />
-        <div className="relative">
-          <span className="t-eyebrow text-glass-accent-on-dark">04 — How it works</span>
-          <h2 className="t-h2 mt-4 mb-10 text-glass-cream-text">Three steps. No mystery.</h2>
-          <div data-stagger className="space-y-12">
-            {STEPS.map((s, i) => (
-              <div key={s.name}>
-                <div className="relative aspect-[16/10] mb-5">
-                  <Visual cover={s.cover} label={`0${i + 1} · ${s.name}`} />
-                </div>
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="icon-tile icon-tile-dark"><s.Icon strokeWidth={1.5} className="w-5 h-5" /></span>
-                  <h3 className="text-[18px] font-semibold text-glass-cream-text">{s.name}</h3>
-                </div>
-                <p className="text-[14px] leading-relaxed text-glass-text-muted">{s.desc}</p>
               </div>
             ))}
           </div>
