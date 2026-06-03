@@ -69,7 +69,14 @@ export default function ProcessScroller() {
               </div>
               <ul className="space-y-8 flex-1">
                 {STEPS.map((s, i) => (
-                  <li key={s.name} className="transition-opacity duration-300" style={{ opacity: active === i ? 1 : 0.32 }}>
+                  <li
+                    key={s.name}
+                    style={{
+                      opacity: active === i ? 1 : 0.3,
+                      transform: active === i ? "translateY(0)" : "translateY(6px)",
+                      transition: "opacity .5s ease, transform .5s cubic-bezier(.16,1,.3,1)",
+                    }}
+                  >
                     <div className="flex items-center gap-3 mb-2">
                       <span className="icon-tile icon-tile-dark"><s.Icon strokeWidth={1.5} className="w-5 h-5" /></span>
                       <span className="text-[13px] font-bold text-glass-text-muted">0{i + 1}</span>
@@ -84,7 +91,16 @@ export default function ProcessScroller() {
           {/* right: cross-fading visual */}
           <div className="relative aspect-[16/10]">
             {STEPS.map((s, i) => (
-              <div key={s.name} className="absolute inset-0 transition-opacity duration-500" style={{ opacity: active === i ? 1 : 0 }}>
+              <div
+                key={s.name}
+                className="absolute inset-0"
+                style={{
+                  opacity: active === i ? 1 : 0,
+                  filter: active === i ? "blur(0px)" : "blur(8px)",
+                  transform: active === i ? "translateY(0)" : "translateY(24px)",
+                  transition: "opacity .7s ease, filter .7s ease, transform .7s cubic-bezier(.16,1,.3,1)",
+                }}
+              >
                 <Visual cover={s.cover} label={s.name} />
               </div>
             ))}

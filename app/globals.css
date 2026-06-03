@@ -86,6 +86,16 @@
   .anim-reveal, .anim-from-top, .anim-up { animation: none !important; clip-path: none !important; opacity: 1 !important; transform: none !important; }
 }
 
+/* ---- Line-mask reveal (Auxia): inner rises out of an overflow-hidden line ---- */
+/* padding/margin trick keeps descenders (g, y, p) from being clipped by overflow */
+.line-mask { display: block; overflow: hidden; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+.line-inner { display: block; will-change: transform; }
+@media (prefers-reduced-motion: reduce) { .line-inner { transform: none !important; } }
+
+/* ---- Hero underline draw (GSAP animates strokeDashoffset 1 -> 0) ---- */
+.hero-underline path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+@media (prefers-reduced-motion: reduce) { .hero-underline path { stroke-dashoffset: 0; } }
+
 /* ---- Accent shimmer (in-progress placeholder) ---- */
 @keyframes accent-shimmer { 0% { transform: translateX(-120%); } 100% { transform: translateX(320%); } }
 .accent-shimmer { animation: accent-shimmer 2.4s ease-in-out infinite; }

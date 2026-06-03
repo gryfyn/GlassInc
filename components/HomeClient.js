@@ -123,6 +123,25 @@ export default function HomeClient() {
   const root = useRef(null);
   useScrollReveal(root);
   const magneticCta = useMagnetic();
+  const heroRef = useRef(null);
+
+  // Hero entrance — Auxia formula: line-mask rise (power4.out, long settle) + blur lift + underline draw
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    gsap.registerPlugin(ScrollTrigger);
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+      tl.set(".hero-eyebrow, .hero-sub, .hero-cta", { autoAlpha: 0, y: 24, filter: "blur(6px)" })
+        .set(".hero-line .line-inner", { yPercent: 110 })
+        .to(".hero-eyebrow", { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.8 }, 0.1)
+        .to(".hero-line .line-inner", { yPercent: 0, duration: 1.2, stagger: 0.1 }, 0.2)
+        .to(".hero-sub", { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 1 }, 0.8)
+        .to(".hero-underline path", { strokeDashoffset: 0, duration: 1.1, ease: "power2.inOut" }, 0.95)
+        .to(".hero-cta", { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 1 }, 1.0);
+    }, heroRef);
+    return () => ctx.revert();
+  }, []);
 
   return (
     <div ref={root} className="min-h-screen flex flex-col bg-glass-canvas text-glass-text-1">
@@ -130,30 +149,35 @@ export default function HomeClient() {
 
       <main className="flex-1">
         {/* ===================== HERO (dark, cinematic backdrop) ===================== */}
-        <section className="relative overflow-hidden bg-glass-ink text-glass-text-dark">
+        <section ref={heroRef} className="relative overflow-hidden bg-glass-ink text-glass-text-dark">
           <HeroBackdrop />
           <div className="absolute inset-0 bg-grid-dark opacity-30 pointer-events-none [mask-image:linear-gradient(to_bottom,black_60%,transparent)]" />
           <GrainOverlay />
           <div className="relative mx-auto max-w-6xl px-6 md:px-8 lg:px-12 pt-28 pb-24 md:pt-36 md:pb-32 lg:pt-40 lg:pb-40 min-h-[88vh] flex items-center">
             <div className="max-w-2xl">
-              <div className="anim-from-top inline-flex items-center gap-2.5 mb-7">
+              <div className="hero-eyebrow inline-flex items-center gap-2.5 mb-7">
                 <span className="t-eyebrow text-glass-accent-on-dark">01 — Software Studio</span>
               </div>
-              <h1 className="anim-reveal t-display-xl text-glass-cream-text max-w-[14ch]" style={{ animationDelay: "0.08s" }}>
-                We build software that runs your business.
+              <h1 className="t-display-xl text-glass-cream-text max-w-[15ch]">
+                <span className="hero-line line-mask"><span className="line-inner">We build software</span></span>
+                <span className="hero-line line-mask"><span className="line-inner">that runs your</span></span>
+                <span className="hero-line line-mask"><span className="line-inner">business.</span></span>
               </h1>
-              <p className="anim-reveal mt-7 max-w-xl text-[18px] leading-[1.65] text-glass-text-muted" style={{ animationDelay: "0.3s" }}>
+              <svg className="hero-underline mt-3 ml-1" width="230" height="14" viewBox="0 0 230 14" fill="none" aria-hidden>
+                <path d="M3 9 C 56 3, 120 3, 168 7 S 222 9, 227 6" stroke="#60A5FA" strokeWidth="3" strokeLinecap="round" pathLength="1" />
+              </svg>
+              <p className="hero-sub mt-7 max-w-xl text-[18px] leading-[1.65] text-glass-text-muted">
                 We partner with small and mid-size businesses to build what runs them — custom
                 software, automation, data, design and content. Everything digital, from one team.
               </p>
-              <div className="anim-from-top mt-9 flex flex-col sm:flex-row gap-3" style={{ animationDelay: "0.46s" }}>
+              <div className="hero-cta mt-9 flex flex-col sm:flex-row gap-3">
                 <Link ref={magneticCta} href="/contact" className="btn btn-primary group">
                   Start your project
                   <ArrowRight strokeWidth={1.75} className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
                 <a href="#work" className="btn btn-ghost">See our work</a>
               </div>
-              <p className="anim-from-top mt-8 t-eyebrow text-glass-text-muted" style={{ animationDelay: "0.56s" }}>Remote-first · Worldwide</p>
+              <p className="hero-cta mt-8 t-eyebrow text-glass-text-muted">Remote-first · Worldwide</p>
             </div>
           </div>
         </section>
