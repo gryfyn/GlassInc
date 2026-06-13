@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ArrowRight, ArrowUpRight, Code2, Bot, BarChart3, MonitorSmartphone,
-  PenTool, Megaphone, Clapperboard, Check, MessagesSquare, Hammer, PackageCheck,
+  PenTool, Megaphone, Clapperboard,
 } from "lucide-react";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -18,8 +18,6 @@ import useScrollReveal from "./useScrollReveal";
 import useMagnetic from "./useMagnetic";
 
 const EMAIL = "glassinctechnologies@gmail.com";
-
-const HERO_WORDS = ["We", "build", "software", "that", "runs", "your", "business."];
 
 const services = [
   { Icon: Code2, name: "Custom software development", desc: "Management systems and operational tools built around exactly how your business works." },
@@ -80,12 +78,6 @@ const projects = [
     title: "PDF-to-Quiz Generator",
     desc: "An AI tool that turns uploaded PDFs into interactive quizzes.",
   },
-];
-
-const steps = [
-  { Icon: MessagesSquare, name: "Talk", desc: "A free, honest call about your biggest operational problem. No pitch, no jargon." },
-  { Icon: Hammer, name: "Build", desc: "You work directly with the person building it. Weekly progress, clear documentation." },
-  { Icon: PackageCheck, name: "Deliver", desc: "Software your team actually uses — proper handover, built for adoption, not just shipped." },
 ];
 
 function ProjectCard({ p }) {
